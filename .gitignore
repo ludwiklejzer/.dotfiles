@@ -1,0 +1,51 @@
+# asdf
+archlinux/.config/asdf/*
+!archlinux/.config/asdf/asdfrc
+!archlinux/.config/asdf/tool-version
+
+# fcitx5
+archlinux/.local/share/fcitx5/themes/default*
+!archlinux/.local/share/fcitx5/themes/darktheme
+
+# firefox
+archlinux/.mozilla/*
+!archlinux/.mozilla/firefox/firefox-themes
+
+# gtk
+archlinux/.config/gtk-2.0/
+archlinux/.config/gtk-3.0/bookmarks
+archlinux/.config/gtk-4.0/*
+
+# mpd
+archlinux/.config/mpd/*
+!archlinux/.config/mpd/mpd.conf
+
+# mpv
+archlinux/.config/mpv/*
+!archlinux/.config/mpv/mpv.conf
+!archlinux/.config/mpv/input.conf
+
+# ncmpcpp
+archlinux/.config/ncmpcpp/*
+!archlinux/.config/ncmpcpp/config
+
+# nvim
+archlinux/.config/nvim/*
+!archlinux/.config/nvim/init.lua
+!archlinux/.config/nvim/lua
+
+# ranger
+archlinux/.config/ranger/*
+!archlinux/.config/ranger/rc.conf
+
+# vis
+archlinux/.config/vis/vis.log
+
+# x11
+archlinux/.config/X11/.Xauthority
+
+# zsh
+archlinux/.config/zsh/*
+!archlinux/.config/zsh/.zlogin
+!archlinux/.config/zsh/.zshrc
+

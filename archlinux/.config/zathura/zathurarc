@@ -1,0 +1,31 @@
+#
+#
+# General Settings
+#
+set sandbox none
+set selection-clipboard clipboard
+set recolor true
+set adjust-open width
+set n-completion-items 10
+set statusbar-v-padding 20: 
+set statusbar-h-padding 20
+set font "SpaceMono Nerd Font Mono normal 10"
+set page-padding 5
+set statusbar-basename true
+set statusbar-home-tilde true
+set guioptions none
+
+
+#
+# Shortcuts
+#
+#
+map <C-i> recolor
+map p print
+
+
+#
+# Color theme provided by pywal (https://github.com/GideonWolfe/Zathura-Pywal)
+#
+
+

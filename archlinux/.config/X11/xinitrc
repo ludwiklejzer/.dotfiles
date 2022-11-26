@@ -1,0 +1,18 @@
+# Solution to "startx does not respect XINITRC" issue:
+# https://gitlab.freedesktop.org/xorg/app/xinit/-/issues/14
+#
+# Edit /usr/bin/startx
+# userclientrc="${XINITRC:-$HOME/.xinitrc}" 
+
+wal -b "#111111" -i ~/Pictures/wallpapers/ & # set wallpaper and colors
+setxkbmap br -option caps:swapescape &       # change esc by capslock
+ibus-daemon -drxR &                          # input method
+picom --animations &                         # compositor
+redshift &                                   # screen color temperature
+dunst &                                      # notifications daemon
+xsetroot -cursor_name left_ptr &             # set cursor type
+unclutter &                                  # hide mouse
+qbittorrent &                                # torrent client
+#anki &                                       # srs flashcards
+
+exec bspwm                                   # window manager

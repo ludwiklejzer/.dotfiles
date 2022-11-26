@@ -1,0 +1,97 @@
+configuration {
+	modi: [drun,run,ssh,combi,window];
+	location: 2;
+	yoffset: 45;
+	lines: 5;
+	font: "SpaceMono Nerd Font Mono 9";
+	fixed-num-lines: false;
+	terminal: "rofi-sensible-terminal";
+	ssh-client: "ssh";
+	ssh-command: "{terminal} -e {ssh-client} {host} [-p {port}]";
+	run-command: "{cmd}";
+	run-list-command: "";
+	run-shell-command: "{terminal} -e {cmd}";
+	window-command: "wmctrl -i -R {window}";
+	window-match-fields: "all";
+	/* icon-theme: "Ultimate-Plata-Suru++ Aspromauros-Icons"; */
+	icon-theme: "Suru++-Asprómauros";
+	drun-match-fields: "name";
+	drun-show-actions: false;
+	drun-display-format: "{name}";
+	drun-url-launcher: "xdg-open";
+	disable-history: false;
+	sort: false;
+	sorting-method: "normal";
+	case-sensitive: false;
+	cycle: true;
+	sidebar-mode: false;
+	hover-select: false;
+	eh: 1;
+	auto-select: false;
+	parse-hosts: false;
+	parse-known-hosts: true;
+	combi-modi: "window,run";
+	matching: "normal";
+	tokenize: true;
+	m: "-5";
+	/* filter: ; */
+	dpi: -1;
+	threads: 0;
+	scroll-method: 0;
+	window-format: "{w}    {c}   {t}";
+	click-to-exit: true;
+	/* theme: ; */
+	max-history-size: 25;
+	combi-hide-mode-prefix: false;
+	window-thumbnail: false;
+	drun-use-desktop-cache: false;
+	drun-reload-desktop-cache: false;
+	normalize-match: false;
+	steal-focus: false;
+	ml-row-left: "ScrollLeft";
+	ml-row-right: "ScrollRight";
+	ml-row-up: "ScrollUp";
+	ml-row-down: "ScrollDown";
+	me-select-entry: "MousePrimary";
+	me-accept-entry: "MouseDPrimary";
+	me-accept-custom: "Control+MouseDPrimary";
+	timeout {
+		action: "kb-cancel";
+		delay:  0;
+	}
+	filebrowser {
+		directories-first: true;
+		sorting-method:    "name";
+	}
+}
+
+@import "~/.cache/wal/colors-rofi-dark"
+
+window {
+	width: 420px;
+	border: 1px;
+	border-color: #292929;
+	padding: 20px;
+}
+
+inputbar {
+	margin: 0 0 10px 0;
+}
+
+listview {
+	scrollbar: false;
+	lines: 5;
+}
+
+entry {
+	placeholder: "";
+}
+
+prompt {
+	padding: 0 5px;
+	margin: 0;
+}
+
+element {
+	padding: 10px 10px;
+}
