@@ -18,11 +18,12 @@ opt.tabstop = 2 -- number of indent tab
 opt.undofile = true -- keep a permanet undo file
 opt.updatetime = 750 -- interval for writing swap file
 opt.timeoutlen = 1000 -- time to wait for a mapping
+opt.wrap = false -- time to wait for a mapping
 opt.shortmess:append("c") -- avoid hit enter prompts
 opt.shortmess:append("sI") -- disable nvim intro
 opt.hidden = true -- allow edit buffer without save
 opt.inccommand = "split" -- command live preview
-opt.cul = true -- cursor line
+opt.cul = false -- cursor line
 opt.showmode = false -- hide status mode
 opt.cmdheight = 1 -- command line height
 opt.clipboard:append("unnamedplus") -- clipboard method

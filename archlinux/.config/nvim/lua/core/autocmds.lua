@@ -31,8 +31,3 @@ autocmd(
 
 -- Close nvim-tree when it is the last window
 autocmd("BufEnter", nil, "*", "if winnr('$') == 1 && bufname() == 'NvimTree_' . tabpagenr() | quit | endif")
-
--- hide cursor line in unfocused buffers
-augroup("CursorLine", true)
-autocmd({ "VimEnter", "WinEnter", "BufWinEnter" }, "CursorLine", "*", "setlocal cursorline")
-autocmd("WinLeave", "CursorLine", "*", "setlocal nocursorline")
