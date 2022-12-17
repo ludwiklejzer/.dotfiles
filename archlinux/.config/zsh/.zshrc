@@ -58,12 +58,10 @@ alias ytdl='youtube-dl'
 alias myip='echo "\n\033[91mLocal IP\033[0m" && ip -br -c a && echo "\n\033[91mPublic IP\033[0m" && curl https://ip.me/'
 alias note="cd ~/Sync/wiki && vim -c ':VimwikiIndex'"
 alias notes="cd ~/Sync/wiki && vim -c ':Files'"
+alias wmclass="xprop | grep WM_CLASS"
 
 # Descobrir como resolver o stuttering
 alias screenrecorder="ffmpeg -f x11grab -s 1366x768 -i :0.0+0,0 -f pulse -i 0 -filter:a "volume=5.0" out.mkv"
-
-alias qemu_nographic=qemu_nogrc
-alias qemu_graphic=qemu_grc
 
 qemu_nogrc() {
 	qemu-system-x86_64 \
