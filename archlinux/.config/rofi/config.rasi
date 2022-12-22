@@ -72,6 +72,7 @@ window {
 	border: 1px;
 	border-color: #292929;
 	padding: 20px;
+	border-radius: 5px;
 }
 
 inputbar {
