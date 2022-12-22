@@ -14,22 +14,22 @@ RED=$(tput setaf 1)
 BOLD=$(tput bold)
 RESET=$(tput sgr0)
 
-# # System support
-# if [ "$(uname -n)" != archlinux ]; then
-# 	clear
-# 	echo 'Sorry, your system is not supported.'
-# 	exit 1
-# fi
+# System support
+if [ "$(uname -n)" != archlinux ]; then
+	clear
+	echo 'Sorry, your system is not supported.'
+	exit 1
+fi
 
-# clear
-# echo "Testing internet connection"
-# if [ "$(
-# 	ping -c 1 -q google.com >/dev/null
-# 	echo $?
-# )" != 0 ]; then
-# 	echo "${RED}Please, connect to some network${RESET}"
-# 	exit 1
-# fi
+clear
+echo "Testing internet connection"
+if [ "$(
+	ping -c 1 -q google.com >/dev/null
+	echo $?
+)" != 0 ]; then
+	echo "${RED}Please, connect to some network${RESET}"
+	exit 1
+fi
 
 pacman_install() {
 	clear
