@@ -16,10 +16,11 @@ super + Escape
 
 # change volume
 super + shift + {plus, minus}
-	pactl -- set-sink-volume 0 {+,-}5% && dunstify -a "changevolue" -h string:x-dunst-stack-tag:pulseaudio "Volume" $(pactl list sinks | grep 'Volume:' | head -n 1 | cut -d '/' -f 2)
+	pactl -- set-sink-volume 0 {+,-}5% && ~/.config/dunst/scripts/volume.sh
 
+# change brightness
 super + ctrl + {plus, minus}
-	xbacklight {-inc, -dec} 5
+	xbacklight {-inc, -dec} 5 && ~/.config/dunst/scripts/backlight.sh
 
 # eject cd drive
 super + F1
