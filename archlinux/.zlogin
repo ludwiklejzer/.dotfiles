@@ -48,7 +48,7 @@ export LESSHISTFILE="$XDG_STATE_HOME/lesshst"
 export RANGER_LOAD_DEFAULT_RC="FALSE"
 
 # MISC
-export LANG="en_US.UTF-8"
+export LANG="fr_FR.UTF-8"
 export EDITOR="nvim"
 export TERMINAL="alacritty"
 export LS_COLORS=ow="36;40:"
