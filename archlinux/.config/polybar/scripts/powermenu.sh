@@ -10,10 +10,8 @@ logout="  Logout"
 
 # Confirmation
 confirm_exit() {
-  echo -e "Yes\nNo" |\
-	rofi -dmenu\
-		-i\
-		-p "Are You Sure?"
+	echo -e "Yes\nNo" |
+		rofi -dmenu -i -p "Are You Sure?"
 }
 
 # Variable passed to rofi
@@ -23,44 +21,42 @@ options="$suspend\n$logout\n$reboot\n$shutdown"
 chosen="$(echo -e "$options" | rofi -dmenu -p "$prompt")"
 
 case $chosen in
-  "$shutdown")
-    answer=$(confirm_exit &)
+"$shutdown")
+	answer=$(confirm_exit &)
 
-    if [[ $answer == "Yes" ]]; then
-      systemctl poweroff
-    else
-      exit 0
-    fi
-    ;;
+	if [[ $answer == "Yes" ]]; then
+		systemctl poweroff
+	else
+		exit 0
+	fi
+	;;
 
-  "$reboot")
-    answer=$(confirm_exit &)
+"$reboot")
+	answer=$(confirm_exit &)
 
-    if [[ $answer == "Yes" ]]; then
-      systemctl reboot
-    else
-      exit 0
-    fi
-    ;;
+	if [[ $answer == "Yes" ]]; then
+		systemctl reboot
+	else
+		exit 0
+	fi
+	;;
 
-  "$suspend")
-    answer=$(confirm_exit &)
+"$suspend")
+	answer=$(confirm_exit &)
 
-    if [[ $answer == "Yes" ]]; then
-      systemctl suspend
-    else
-      exit 0
-    fi
-    ;;
-  "$logout")
-    answer=$(confirm_exit &)
+	if [[ $answer == "Yes" ]]; then
+		systemctl suspend
+	else
+		exit 0
+	fi
+	;;
+"$logout")
+	answer=$(confirm_exit &)
 
-    if [[ $answer == "Yes" ]]; then
-      loginctl kill-session self
-    else
-      exit 0
-    fi
-    ;;
+	if [[ $answer == "Yes" ]]; then
+		loginctl kill-session self
+	else
+		exit 0
+	fi
+	;;
 esac
-
-
