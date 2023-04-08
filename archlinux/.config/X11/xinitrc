@@ -1,3 +1,4 @@
+barriers -a 192.168.100.188 --disable-crypto -l /var/log/barrier.log -c /home/ludwiklejzer/.config/barrier/barrier.conf &
 picom --animations  &                  # compositor
 xset r rate 300 50 &                   # repeated key rate
 wal -R &                               # set wallpaper and colors
