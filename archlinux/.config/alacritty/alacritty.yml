@@ -4,13 +4,13 @@ font:
     y: 3
   size: 8.5
   normal:
-    family: Cartograph CF Nerd Font
+    family: &font Cartograph CF Nerd Font
     style: Regular
   bold:
-    family: Cartograph CF Nerd Font
+    family: *font
     style: Bold
   italic:
-    family: Cartograph CF Nerd Font
+    family: *font
     style: Italic
   offset:
     y: 8
