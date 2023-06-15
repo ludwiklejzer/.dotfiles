@@ -12,7 +12,7 @@ local config = {
 	cursor_blink_ease_in = { CubicBezier = { 0.0, 0.0, 0, 0 } },
 	cursor_blink_rate = 600,
 	enable_tab_bar = false,
-	window_background_opacity = 0.8,
+	window_background_opacity = 1,
 	window_padding = {
 		left = 15,
 		right = 15,

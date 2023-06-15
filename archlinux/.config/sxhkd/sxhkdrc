@@ -44,7 +44,7 @@ super + shift + n
 
 # bookmarks
 super + shift + b
-	xdotool type "$(cat $XDG_DATA_HOME/bookmarks | tr -s ' ' | cut -d'@' -f1 | rofi -dmenu | grep -f - $XDG_DATA_HOME/bookmarks | cut -d'@' -f2 | tr -d ' ')"
+	xdotool type "$(cat $XDG_DATA_HOME/bookmarks | tr -s ' ' | cut -d'@' -f1 | rofi -dmenu -i | grep -f - $XDG_DATA_HOME/bookmarks | cut -d'@' -f2 | tr -d ' ')"
 
 # open browser
 super + b
