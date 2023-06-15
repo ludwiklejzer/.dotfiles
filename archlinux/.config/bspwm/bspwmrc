@@ -23,5 +23,4 @@ bspc config gapless_monocle true
 bspc rule -a Brave-browser desktop='^1'
 bspc rule -a qBittorrent desktop='^4'
 bspc rule -a Pick-colour-picker state=floating
-bspc rule -a Alacritty rectangle=670x400+370+170 state=pseudo_tiled
-bspc rule -a Anki state=floating desktop='^3'
+bspc rule -a org.wezfurlong.wezterm rectangle=670x400+370+170 state=pseudo_tiled
