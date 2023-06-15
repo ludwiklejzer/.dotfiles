@@ -1,10 +1,19 @@
+colors:
+  # Default colors
+  primary:
+    background: "0x090807"
+  transparent_background_colors: true
+cursor:
+  blink_interval: 500
+  style:
+    blinking: Always
+    shape: Beam
+  unfocused_hollow: true
 font:
   glyph_offset:
-    x: 0
     y: 3
-  size: 8.5
   normal:
-    family: &font Cartograph CF Nerd Font
+    family: &font JetBrainsMono Nerd Font
     style: Regular
   bold:
     family: *font
@@ -13,29 +22,15 @@ font:
     family: *font
     style: Italic
   offset:
-    y: 8
+    y: 5
+  size: 8.5
+key_bindings:
+  - {chars: "gcc", key: Slash, mods: Control}
+  - {action: ResetFontSize, key: Key0, mods: Control}
+  - {action: IncreaseFontSize, key: Plus, mods: Control}
+  - {action: DecreaseFontSize, key: Minus, mods: Control}
 window:
-  opacity: 1
+  opacity: 0.9
   padding:
     x: 15
     y: 15
-cursor:
-  style:
-    shape: Beam
-    blinking: Always
-  blink_interval: 500
-  unfocused_hollow: true
-colors:
-  # Default colors
-  primary:
-    background: "0x090807"
-# shell:
-#   program: /bin/zsh
-#   args:
-#     - -c
-#     - neofetch && exec zsh
-key_bindings:
-  - {key: Slash, mods: Control, chars: "gcc"}
-  - {key: Key0, mods: Control, action: ResetFontSize}
-  - {key: Plus, mods: Control, action: IncreaseFontSize}
-  - {key: Minus, mods: Control, action: DecreaseFontSize}
