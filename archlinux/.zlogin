@@ -28,7 +28,7 @@ export XAUTHORITY="$XDG_RUNTIME_DIR/.Xauthority"
 export ASDF_DIR="/opt/asdf-vm"
 export ASDF_DATA_DIR="$XDG_CONFIG_HOME/asdf"
 export ASDF_CONFIG_FILE="$XDG_CONFIG_HOME/asdf/asdfrc"
-export ASDF_DEFAULT_TOOL_VERSIONS_FILENAME="$XDG_CONFIG_HOME/asdf/tool-versions"
+export ASDF_DEFAULT_TOOL_VERSIONS_FILENAME=".config/asdf/tool-versions"
 
 # WGET
 export WGETRC="$XDG_CONFIG_HOME/wget/wgetrc"
@@ -48,9 +48,10 @@ export LESSHISTFILE="$XDG_STATE_HOME/lesshst"
 export RANGER_LOAD_DEFAULT_RC="FALSE"
 
 # MISC
-export LANG="fr_FR.UTF-8"
+export LANG="en_US.UTF-8"
 export EDITOR="nvim"
 export TERMINAL="alacritty"
+export BROWSER="brave"
 export LS_COLORS=ow="36;40:"
 
 # run startx automatically on tty1
