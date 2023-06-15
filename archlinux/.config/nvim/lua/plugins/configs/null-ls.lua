@@ -54,3 +54,16 @@ null_ls.setup({
 		})
 	end,
 })
+
+-- custom qml formatting
+local qmlformat = {
+	method = null_ls.methods.FORMATTING,
+	filetypes = { "qml" },
+	generator = null_ls.formatter({
+		command = "qmlformat",
+		args = { "$FILENAME" },
+		to_stdin = true,
+		from_stderr = true,
+	}),
+}
+null_ls.register(qmlformat)

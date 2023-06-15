@@ -7,6 +7,7 @@ lsp_signature.setup({
 		floating_window = true,
 		fix_pos = true,
 		hint_enable = false,
+		hint_prefix = "",
 		hi_parameter = "TSAttribute",
 		max_height = 22,
 		max_width = 70,
@@ -15,5 +16,6 @@ lsp_signature.setup({
 		},
 		zindex = 200,
 		padding = " ",
+		shadow_enabled = true,
 	}),
 })

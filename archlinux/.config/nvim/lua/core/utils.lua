@@ -1,7 +1,6 @@
 local M = {}
 
-local cmd = vim.cmd
-
+-- mapping
 M.map = function(mode, keys, command, opt)
 	local options = { noremap = true, silent = true }
 
@@ -19,26 +18,83 @@ M.map = function(mode, keys, command, opt)
 	vim.keymap.set(mode, keys, command, opt)
 end
 
-_G.Compile = function()
-	local filetype = vim.bo.filetype
-	local input = vim.fn.expand("%:p")
-	local output = "/tmp/" .. vim.fn.expand("%:t:r")
+-- auto commands
+M.augroup = function(name, clear)
+	vim.api.nvim_create_augroup(name, { clear = clear })
+end
 
-	local language_config = {
-		c = "gcc -o " .. output .. " " .. input .. " && " .. output,
-		cpp = "g++ -o " .. output .. " " .. input .. " && " .. output,
-		python = "python " .. input,
-		javascript = "node " .. input,
-		lua = "luajit " .. input,
-	}
+M.autocmd = function(event, group, pattern, cmd)
+	vim.api.nvim_create_autocmd(event, {
+		group = group,
+		pattern = pattern,
+		command = cmd,
+	})
+end
 
-	for language, compiler_cmd in pairs(language_config) do
-		if filetype == language then
-			local open_terminal = ":w | below 10sp term://"
-			local final_cmd = open_terminal .. compiler_cmd
-			vim.cmd(final_cmd)
+M.setSpellLang = function(lang)
+	local clients = vim.lsp.buf_get_clients()
+
+	for i, client in ipairs(clients) do
+		if client.name == "ltex" then
+			clients[i].config.settings.ltex.language = lang
+			print("ltex: Language changed to " .. lang)
+			break
 		end
 	end
 end
+
+-- Globals
+
+_G.OpenSsl = {
+	encrypted_file_path = nil,
+
+	decrypt = function()
+		local password = vim.fn.inputsecret("Password: ")
+		OpenSsl.encrypted_file_path = vim.fn.expand("%:p")
+
+		os.execute(
+			"openssl enc -d -aes-256-cbc -md sha512 -pbkdf2 -iter 100000 -salt -in "
+				.. vim.fn.expand("%:p")
+				.. " -out /tmp/"
+				.. vim.fn.expand("%:t")
+				.. " -pass pass:'"
+				.. password
+				.. "'"
+		)
+
+		vim.fn.execute(":bd | e /tmp/" .. vim.fn.expand("%:t"))
+	end,
+
+	encrypt = function()
+		local password = vim.fn.inputsecret("Password: ")
+		local output_filename = vim.fn.input("File name: ")
+
+		os.execute(
+			"openssl enc -aes-256-cbc -md sha512 -pbkdf2 -iter 100000 -salt -in "
+				.. vim.fn.expand("%:p")
+				.. " -out "
+				.. output_filename
+				.. ".aes -pass pass:"
+				.. password
+		)
+	end,
+
+	save = function()
+		local password = vim.fn.inputsecret("Password: ")
+
+		os.execute(
+			"openssl enc -aes-256-cbc -md sha512 -pbkdf2 -iter 100000 -salt -in /tmp/"
+				.. vim.fn.expand("%:t")
+				.. " -out "
+				.. OpenSsl.encrypted_file_path
+				.. " -pass pass:"
+				.. password
+		)
+	end,
+
+	exit = function()
+		os.execute("rm /tmp/" .. vim.fn.expand("%:t"))
+	end,
+}
 
 return M

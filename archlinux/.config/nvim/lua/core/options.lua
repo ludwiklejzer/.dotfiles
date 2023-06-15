@@ -18,66 +18,42 @@ opt.tabstop = 2 -- number of indent tab
 opt.undofile = true -- keep a permanet undo file
 opt.updatetime = 750 -- interval for writing swap file
 opt.timeoutlen = 1000 -- time to wait for a mapping
-opt.wrap = false -- time to wait for a mapping
+opt.wrap = false -- break line or not
+opt.breakindent = true -- indent broken line
 opt.shortmess:append("c") -- avoid hit enter prompts
 opt.shortmess:append("sI") -- disable nvim intro
 opt.hidden = true -- allow edit buffer without save
 opt.inccommand = "split" -- command live preview
-opt.cul = false -- cursor line
+opt.cul = false -- highlight the line of the cursor
 opt.showmode = false -- hide status mode
-opt.cmdheight = 1 -- command line height
-opt.clipboard:append("unnamedplus") -- clipboard method
-opt.ignorecase = true -- searchs case insensitive
+opt.cmdheight = 0 -- command line height
+opt.clipboard = "unnamedplus" -- sync clipboard between OS and Neovim
+opt.ignorecase = true -- search case insensitive
 opt.smartcase = true -- override ignorecase
-opt.title = true -- title of the window
+opt.title = true -- show filename in the title bar
 opt.path:append("**") -- recursive find
-opt.mousemodel = "popup" -- right mouse button
-opt.fillchars = { eob = " ", fold = "─" } -- disable tilde & change folding symbol
-opt.signcolumn = "auto:1" -- only when there is a sign to show
-opt.pumheight = 15 -- popup menu size
+opt.mousemodel = "popup" -- open popup with the right mouse button
+opt.fillchars = { fold = "─" } -- change folding symbol
+opt.fillchars = { eob = " " } -- hide empty lines tilde
+opt.signcolumn = "auto:1" -- show only when there is a sign to show
+opt.pumheight = 15 -- maximum number of items in the popup menu
 opt.splitbelow = true -- put new windows below
 opt.splitright = true -- put new windows right
 opt.whichwrap:append("<>[]hl") -- go to next or previous line
-opt.laststatus = 3 -- global statusbar
+opt.laststatus = 0 -- statusbar
 opt.backup = true -- life saver
+opt.backupskip:append("*.asc,*.aes,*.pgp") -- skip these filetypes on backup
+opt.spellfile = vim.fn.stdpath("config") .. "/spell/words.utf-8.add" -- saved words
 opt.backupdir = "/home/ludwiklejzer/.config/nvim/backup/" -- backups oath
-opt.writebackup = true -- make backup before overwriting the current buffer
+opt.writebackup = true -- backup before overwriting the current buffer
 opt.backupcopy = "yes" -- overwrite the original backup file
 opt.foldmethod = "expr" -- folding based on expression
 opt.foldexpr = "nvim_treesitter#foldexpr()" -- expression used on folding
-opt.foldenable = false -- disable folding on vimenter
+opt.foldenable = true -- folding on VimEnter
 opt.foldlevelstart = 99 -- disable auto folding everything
-opt.foldtext = "v:lua.MyFoldText()"
+opt.foldtext = "v:lua.MyFoldText()" -- custom folding function
 
 function MyFoldText()
 	local line = vim.fn.getline(vim.v.foldstart)
-	local line_count = vim.v.foldend - vim.v.foldstart + 1
-	-- return '├── ' .. line_count .. ' lines: ' .. line
-	return "├──  " .. line .. " "
-end
-
--- disable some builtin vim plugins
-local default_plugins = {
-	"2html_plugin",
-	"getscript",
-	"getscriptPlugin",
-	"gzip",
-	"logipat",
-	"netrw",
-	"netrwPlugin",
-	"netrwSettings",
-	"netrwFileHandlers",
-	"matchit",
-	"tar",
-	"tarPlugin",
-	"tohtml",
-	"rrhelper",
-	"vimball",
-	"vimballPlugin",
-	"zip",
-	"zipPlugin",
-}
-
-for _, plugin in pairs(default_plugins) do
-	g["loaded_" .. plugin] = 1
+	return line .. " "
 end

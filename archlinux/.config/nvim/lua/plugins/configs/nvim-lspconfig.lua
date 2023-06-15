@@ -6,10 +6,10 @@ local function lspSymbol(name, icon)
 	vim.fn.sign_define(hl, { text = icon, numhl = hl, texthl = hl })
 end
 
-lspSymbol("Error", "")
-lspSymbol("Info", "")
+lspSymbol("Error", "")
+lspSymbol("Info", "")
 lspSymbol("Hint", "")
-lspSymbol("Warn", "")
+lspSymbol("Warn", "")
 
 local handlers = {
 	{ "hover", "hover" },
@@ -25,7 +25,7 @@ vim.diagnostic.config({
 	float = {
 		source = "always",
 	},
-	virtual_text = false,
+	virtual_text = true,
 	signs = true,
 	underline = true,
 	update_in_insert = false,
@@ -72,8 +72,70 @@ for _, lsp in ipairs(servers) do
 	})
 end
 
+-- LanguageTool
+local function getDictWords()
+	local path = vim.fn.stdpath("config") .. "/spell/words.utf-8.add"
+	local words = {}
+
+	for word in io.open(path, "r"):lines() do
+		table.insert(words, word)
+	end
+
+	return words
+end
+
+lspconfig.ltex.setup({
+	on_attach = on_attach,
+	capabilities = capabilities,
+	cmd = { "ltex-ls" },
+	filetypes = { "tex", "latex" },
+	flags = { debounce_text_changes = 300 },
+	trace = { server = "verbose" },
+	settings = {
+		ltex = {
+			language = "en-US",
+			-- language = "pt-BR",
+			completionEnabled = true,
+			checkFrequency = "save",
+			enabled = {
+				"bibtex",
+				"context",
+				"context.tex",
+				"html",
+				"latex",
+				"markdown",
+				"org",
+				"restructuredtext",
+				"rsweave",
+			},
+			diagnosticSeverity = {
+				PASSIVE_VOICE = "hint",
+				PASSIVE_VOICE_SIMPLE = "hint",
+				SINGULAR_AGREEMENT_SENT_START = "error",
+				AGREEMENT_SENT_START = "error",
+				ADMIT_ENJOY_VB = "error",
+				EN_A_VS_AN = "error",
+				PUNCTUATION_PARAGRAPH_END = "error",
+				UPPERCASE_SENTENCE_START = "error",
+				HUNSPELL_RULE = "error",
+				GENERAL_GENDER_AGREEMENT_ERRORS = "error",
+				default = "information",
+			},
+			setenceCacheSize = 2000,
+			additionalRules = {
+				enablePickyRules = true,
+				motherTongue = "pt-BR",
+			},
+			dictionary = {
+				["en-US"] = getDictWords(),
+				["pt-BR"] = getDictWords(),
+			},
+		},
+	},
+})
+
 -- Lua lsp config
-lspconfig.sumneko_lua.setup({
+lspconfig.lua_ls.setup({
 	on_attach = on_attach,
 	capabilities = capabilities,
 	settings = {
@@ -114,7 +176,18 @@ lspconfig.emmet_ls.setup({
 	filetypes = { "html", "css", "javascriptreact", "javascript.jsx", "typescriptreact" },
 })
 
-lspconfig.sqls.setup({
-	on_attach = on_attach,
-	capabilities = capabilities,
-})
+-- custom qml lsp
+local server_config = require("lspconfig.configs")
+
+server_config.qmlls = {
+	default_config = {
+		cmd = { "qmlls6", "--build-dir", "~/.cache" },
+		name = "qmlls",
+		filetypes = { "qml" },
+		root_dir = function()
+			return vim.loop.cwd()
+		end,
+	},
+}
+
+require("lspconfig").qmlls.setup({})

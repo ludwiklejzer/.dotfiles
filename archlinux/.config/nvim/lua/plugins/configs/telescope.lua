@@ -1,4 +1,4 @@
-local telescope = require('telescope')
+local telescope = require("telescope")
 
 local options = {
 	defaults = {
@@ -12,10 +12,10 @@ local options = {
 			"--smart-case",
 		},
 		borderchars = {
-			{ '─', '│', '─', '│', '┌', '┐', '┘', '└' },
-			prompt = { "─", "│", " ", "│", '┌', '┐', "│", "│" },
+			{ "─", "│", "─", "│", "┌", "┐", "┘", "└" },
+			prompt = { "─", "│", " ", "│", "┌", "┐", "│", "│" },
 			results = { "─", "│", "─", "│", "├", "┤", "┘", "└" },
-			preview = { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
+			preview = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
 		},
 		file_ignore_patterns = { "node_modules", ".git" },
 		generic_sorter = require("telescope.sorters").get_generic_fuzzy_sorter,
@@ -29,19 +29,20 @@ local options = {
 		initial_mode = "insert",
 		path_display = { "smart" },
 		sorting_strategy = "ascending",
-		layout_strategy = 'center',
+		layout_strategy = "center",
 		layout_config = {
 			center = {
 				height = 0.5,
 				width = 60,
-				prompt_position = 'top',
+				prompt_position = "top",
 				preview_cutoff = 1,
 				mirror = false,
-			}
-		}
+			},
+		},
 	},
-	extensions = {
-	},
+	extensions = {},
 }
 
 telescope.setup(options)
+
+telescope.load_extension("file_browser")

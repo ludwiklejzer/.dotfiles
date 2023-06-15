@@ -1,270 +1,257 @@
-local packer = require("packer")
+-- lazy.nvim bootstrap
+local opts = require("plugins.configs.lazy_nvim")
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
-return packer.startup(function(use)
+if not vim.loop.fs_stat(lazypath) then
+	vim.fn.system({
+		"git",
+		"clone",
+		"--filter=blob:none",
+		"https://github.com/folke/lazy.nvim.git",
+		"--branch=stable", -- latest stable release
+		lazypath,
+	})
+end
+vim.opt.rtp:prepend(lazypath)
+
+local plugins = {
+
+	-- lua library
+	"nvim-lua/plenary.nvim",
+
 	-- manage LSP servers, DAP servers, linters, and formatters
-	use({
+	{
 		"williamboman/mason.nvim",
 		config = function()
 			require("plugins.configs.mason")
 		end,
-	})
+	},
 
 	-- integration between lspconfig and mason
-	use({
+	{
 		"williamboman/mason-lspconfig.nvim",
+		init = function()
+			vim.schedule(function()
+				require("lazy").load({ plugins = "mason-lspconfig.nvim" })
+				vim.cmd("silent! do FileType")
+			end, 0)
+		end,
 		config = function()
+			local servers = vim.tbl_keys(require("lspconfig.configs"))
 			require("mason-lspconfig").setup({
-				automatic_installation = true,
+				-- ensure_installed = servers,
 			})
 		end,
-	})
+	},
 
 	-- inject LSP diagnostics, code actions, and more
-	use({
+	{
 		"jose-elias-alvarez/null-ls.nvim",
+		init = function()
+			vim.schedule(function()
+				require("lazy").load({ plugins = "null-ls.nvim" })
+			end, 0)
+		end,
 		config = function()
 			require("plugins.configs.null-ls")
 		end,
-	})
+	},
 
 	-- integration between mason and null-ls
-	use({
+	{
 		"jayp0521/mason-null-ls.nvim",
+		cmd = "NullLsInstall",
+		build = ":NullLsInstall",
 		config = function()
-			require("plugins.configs.mason-null-ls")
+			require("mason-null-ls").setup({
+				automatic_installation = true,
+			})
 		end,
-	})
+	},
 
 	-- language server protocol
-	use({
+	{
 		"neovim/nvim-lspconfig",
 		config = function()
 			require("plugins.configs.nvim-lspconfig")
 		end,
-	})
-
-	-- snippets library
-	use({
-		"rafamadriz/friendly-snippets",
-		module = "cmp_nvim_lsp",
-		event = "InsertEnter",
-	})
-
-	-- completion engine
-	use({
-		"hrsh7th/nvim-cmp",
-		after = "friendly-snippets",
-		config = function()
-			require("plugins.configs.cmp")
-		end,
-	})
-
-	-- snippets engine
-	use({
-		"L3MON4D3/LuaSnip",
-		tag = "v<CurrentMajor>.*",
-		wants = "friendly-snippets",
-		after = "nvim-cmp",
-		config = function()
-			require("plugins.configs.luasnip")
-		end,
-	})
-
-	-- luasnip completion source for nvim-cmp
-	use({
-		"saadparwaiz1/cmp_luasnip",
-		after = "LuaSnip",
-	})
-
-	-- nvim-cmp source for neovim Lua API
-	use({
-		"hrsh7th/cmp-nvim-lua",
-		after = "cmp_luasnip",
-	})
-
-	-- nvim-cmp source for neovim builtin LSP client
-	use({
-		"hrsh7th/cmp-nvim-lsp",
-		after = "cmp-nvim-lua",
-	})
-
-	-- nvim-cmp source for buffer words
-	use({
-		"hrsh7th/cmp-buffer",
-		after = "cmp-nvim-lsp",
-	})
-
-	-- nvim-cmp source for paths
-	use({
-		"hrsh7th/cmp-path",
-		after = "cmp-buffer",
-	})
-
-	-- nvim-cmp source for spell checking
-	use({
-		"f3fora/cmp-spell",
-		after = "cmp-path",
-	})
-
-	-- nvim-cmp source for math calculation
-	use({
-		"hrsh7th/cmp-calc",
-		after = "cmp-spell",
-	})
-
-	-- auto close pairs (), [], {}, "", ''
-	use({
-		"windwp/nvim-autopairs",
-		after = "cmp-calc",
-		config = function()
-			require("plugins.configs.nvim-autopairs")
-		end,
-	})
-
-	-- lsp hint as you type
-	use({
-		"ray-x/lsp_signature.nvim",
-		event = "InsertEnter",
-		config = function()
-			require("plugins.configs.lsp_signature")
-		end,
-	})
+	},
 
 	-- parser generator (highlight, folding etc)
-	use({
+	{
 		"nvim-treesitter/nvim-treesitter",
-		run = ":TSUpdate",
+		build = ":TSUpdate",
 		config = function()
 			require("plugins.configs.nvim-treesitter")
 		end,
-	})
+	},
 
-	-- auto close/rename tag
-	use({
-		"windwp/nvim-ts-autotag",
+	-- completion engine
+	{
+		"hrsh7th/nvim-cmp",
 		event = "InsertEnter",
+		dependencies = {
+			-- snippets engine
+			{
+				"L3MON4D3/LuaSnip",
+				version = "<CurrentMajor>.*",
+				build = "make install_jsregexp",
+				dependencies = "rafamadriz/friendly-snippets", -- snippets library
+				config = function()
+					require("plugins.configs.luasnip")
+				end,
+			},
+
+			-- auto close pairs (), [], {}, "", ''
+			{
+				"windwp/nvim-autopairs",
+				config = function()
+					require("plugins.configs.nvim-autopairs")
+				end,
+			},
+
+			-- cmp sources
+			"saadparwaiz1/cmp_luasnip", -- luasnip completion
+			"hrsh7th/cmp-nvim-lua", -- neovim Lua API
+			"hrsh7th/cmp-nvim-lsp", -- neovim builtin LSP client
+			"hrsh7th/cmp-buffer", -- buffer words
+			"hrsh7th/cmp-path", -- complete paths
+			"f3fora/cmp-spell", -- spell checking
+			"hrsh7th/cmp-calc", -- math calculation
+		},
 		config = function()
-			require("nvim-ts-autotag").setup({ enable = true })
+			require("plugins.configs.cmp")
 		end,
-	})
+	},
 
-	-- change commentstring according to the lang
-	use({
-		"JoosepAlviste/nvim-ts-context-commentstring",
-		event = "InsertEnter",
-	})
+	-- font icons
+	{
+		"nvim-tree/nvim-web-devicons",
+		config = function()
+			require("nvim-web-devicons").setup()
+		end,
+	},
 
-	-- lua library
-	use({
-		"nvim-lua/plenary.nvim",
-		module = "plenary",
-	})
-
-	-- popup nvim implementation
-	use({
-		"nvim-lua/popup.nvim",
-		module = "popup",
-	})
+	-- statusline
+	{
+		"nvim-lualine/lualine.nvim",
+		init = function()
+			vim.schedule(function()
+				require("lazy").load({ plugins = "lualine.nvim" })
+			end, 0)
+		end,
+		config = function()
+			require("plugins.configs.lualine")
+		end,
+	},
 
 	-- fuzzy finder
-	use({
+	{
 		"nvim-telescope/telescope.nvim",
-		cmd = { "Telescope" },
+		cmd = "Telescope",
 		config = function()
 			require("plugins.configs.telescope")
 		end,
-	})
+	},
+
+	-- file browser
+	{
+		"nvim-telescope/telescope-file-browser.nvim",
+		cmd = "Telescope file_browser",
+	},
 
 	-- git symbols (added, deleted, changed) in the signcolumn
-	use({
+	{
 		"lewis6991/gitsigns.nvim",
+		ft = "gitcommit",
+		init = function()
+			-- load gitsigns only when a git file is opened
+			vim.api.nvim_create_autocmd({ "BufRead" }, {
+				group = vim.api.nvim_create_augroup("GitSignsLazyLoad", { clear = true }),
+				callback = function()
+					vim.fn.system("git -C " .. '"' .. vim.fn.expand("%:p:h") .. '"' .. " rev-parse")
+					if vim.v.shell_error == 0 then
+						vim.api.nvim_del_augroup_by_name("GitSignsLazyLoad")
+						vim.schedule(function()
+							require("lazy").load({ plugins = { "gitsigns.nvim" } })
+						end)
+					end
+				end,
+			})
+		end,
 		config = function()
 			require("plugins.configs.gitsigns")
 		end,
-	})
-
-	-- statusline
-	use({
-		"feline-nvim/feline.nvim",
-		config = function()
-			require("plugins.configs.feline")
-		end,
-	})
-
-	-- buffers listed like tabs
-	use({
-		"akinsho/bufferline.nvim",
-		config = function()
-			require("plugins.configs.bufferline")
-		end,
-	})
-
-	-- icons
-	use({
-		"kyazdani42/nvim-web-devicons",
-		module = "nvim-web-devicons",
-	})
+	},
 
 	-- sidebar file navigation
-	use({
-		"kyazdani42/nvim-tree.lua",
+	{
+		"nvim-tree/nvim-tree.lua",
 		cmd = { "NvimTreeToggle", "NvimTreeFocus" },
+		version = "*",
 		config = function()
 			require("plugins.configs.nvim-tree")
 		end,
-	})
+	},
+
+	-- indent lines guides
+	{
+		"lukas-reineke/indent-blankline.nvim",
+		init = function()
+			vim.schedule(function()
+				require("lazy").load({ plugins = "indent-blankline.nvim" })
+			end, 0)
+		end,
+		config = function()
+			require("plugins.configs.indent-blankline")
+		end,
+	},
 
 	-- hide screen elements
-	use({
+	{
 		"Pocco81/TrueZen.nvim",
 		cmd = { "TZAtaraxis" },
-	})
+		config = function()
+			require("true-zen").setup({
+				modes = {
+					ataraxis = {
+						callbacks = {
+							close_pos = function()
+								require("lualine").hide({ unhide = true })
+								vim.wo.linebreak = false
+								vim.wo.wrap = false
+							end,
+							open_pre = function()
+								require("lualine").hide()
+								vim.wo.linebreak = true
+								vim.wo.wrap = true
+							end,
+						},
+					},
+				},
+			})
+		end,
+	},
 
 	-- comment code blocks
-	use({
+	{
 		"terrortylor/nvim-comment",
 		cmd = { "CommentToggle" },
 		config = function()
 			require("nvim_comment").setup({ comment_empty = false })
 		end,
-	})
+	},
 
-	-- indent lines guides
-	use({
-		"lukas-reineke/indent-blankline.nvim",
-		config = function()
-			require("plugins.configs.indent_blankline")
-		end,
-	})
-
-	-- add, replace and remove surround characters
-	use({
-		"ur4ltz/surround.nvim",
-		event = "InsertEnter",
-		config = function()
-			require("surround").setup({ mappings_style = "sandwich" })
-		end,
-	})
-
-	-- discord rich presence
-	use({
-		"andweeb/presence.nvim",
-		event = "InsertEnter",
-	})
-
-	-- colors based on wallpaper
-	use({
-		"AlphaTechnolog/pywal.nvim",
-		as = "pywal",
-		config = function()
-			-- require('pywal').setup()
+	-- colorscheme based on wallpaper
+	{
+		"atalazer/wally.nvim",
+		lazy = false,
+		priority = 1000,
+		build = "./setup.sh",
+		init = function()
+			require("wally").colorscheme()
 			require("plugins.configs.custom_colors")
 		end,
-	})
-
-	use({
-		"atalazer/wally.nvim",
-		run = "./setup.sh",
 		config = function()
 			vim.g.wally_wal_dir = "~/.cache/wal"
 			vim.g.wally_italic_comments = true
@@ -272,58 +259,195 @@ return packer.startup(function(use)
 			vim.g.wally_italic_keywords = true
 			vim.g.wally_italic_functions = false
 			vim.g.wally_sidebars = { "qf", "vista_kind", "terminal", "Nvimtree", "Trouble", "packer" }
-			require("wally").colorscheme()
-			require("plugins.configs.custom_colors")
 		end,
-	})
+	},
+
+	-- colorscheme
+	{
+		"catppuccin/nvim",
+		lazy = false,
+		name = "catppuccin",
+		config = function()
+			require("catppuccin").setup({
+				flavour = "mocha",
+				transparent_background = false,
+				dim_inactive = {
+					enabled = false,
+					shade = "dark",
+					percentage = 0.15,
+				},
+				no_italic = false, -- Force no italic
+				no_bold = false, -- Force no bold
+				styles = {
+					comments = { "italic" },
+					conditionals = { "italic" },
+					loops = {},
+					functions = {},
+					keywords = {},
+					strings = {},
+					variables = {},
+					numbers = {},
+					booleans = {},
+					properties = {},
+					types = {},
+					operators = {},
+				},
+				color_overrides = {},
+				custom_highlights = {},
+				integrations = {
+					cmp = true,
+					gitsigns = true,
+					nvimtree = true,
+					telescope = true,
+					notify = false,
+					mini = false,
+					-- For more plugins integrations please scroll down (https://github.com/catppuccin/nvim#integrations)
+				},
+			})
+		end,
+	},
 
 	-- open large files fast
-	use({
+	{
 		"vim-scripts/LargeFile",
-	})
+		init = function()
+			local filepath = vim.fn.expand("%")
+			local filesize = vim.fn.getfsize(filepath) / (1024 * 1024)
+			local max_filesize = 20 -- megabytes
+
+			-- plugin minimum file size to run
+			vim.g.LargeFile = max_filesize
+
+			if filesize > max_filesize then
+				require("lazy").load({ plugins = { "LargeFile" } })
+			end
+		end,
+	},
 
 	-- personal wiki
-	use({
+	{
 		"vimwiki/vimwiki",
-		setup = function()
+		cmd = { "VimwikiIndex", "VimwikiDiaryIndex" },
+		init = function()
 			require("plugins.configs.vimwiki")
 		end,
-		cmd = { "VimwikiIndex", "VimwikiDiaryIndex" },
-	})
+	},
 
 	-- easy motion
-	use({
+	{
 		"phaazon/hop.nvim",
 		branch = "v2",
 		cmd = "HopChar1",
 		config = function()
 			require("hop").setup({ keys = "etovxqpdygfblzhckisuran" })
 		end,
-	})
+	},
+
+	-- add, replace and remove surround characters
+	{
+		"ur4ltz/surround.nvim",
+		event = "InsertEnter",
+		opts = { mappings_style = "sandwich" },
+	},
+
+	-- discord rich presence
+	{
+		"andweeb/presence.nvim",
+		cond = function()
+			local is_discord_running = vim.fn.systemlist("pgrep -x discord")
+			return is_discord_running[1]
+		end,
+		init = function()
+			vim.defer_fn(function()
+				require("lazy").load({ plugins = { "presence.nvim" } })
+			end, 0)
+		end,
+	},
 
 	-- show colors code on the document
-	use({
+	{
 		"norcalli/nvim-colorizer.lua",
+		init = function()
+			vim.defer_fn(function()
+				require("lazy").load({ plugins = { "nvim-colorizer.lua" } })
+			end, 0)
+		end,
 		config = function()
 			require("colorizer").setup()
+			require("colorizer").attach_to_buffer()
 		end,
-	})
+	},
 
-	use({
-		"mfussenegger/nvim-dap",
-		config = function()
-			require("plugins.configs.dap")
-		end,
-	})
-
-	use({
-		"jayp0521/mason-nvim-dap.nvim",
-		config = function()
-			require("plugins.configs.mason-nvim-dap")
-		end,
-	})
-
-	use({
+	-- qml syntax highlighting
+	{
 		"peterhoeg/vim-qml",
-	})
-end)
+		ft = "qml",
+	},
+
+	-- lsp hint as you type
+	{
+		"ray-x/lsp_signature.nvim",
+		event = "InsertEnter",
+		config = function()
+			require("plugins.configs.lsp_signature")
+		end,
+	},
+
+	-- auto close/rename tag
+	{
+		"windwp/nvim-ts-autotag",
+		event = "InsertEnter",
+		ft = {
+			"html",
+			"javascript",
+			"typescript",
+			"javascriptreact",
+			"typescriptreact",
+			"vue",
+			"tsx",
+			"jsx",
+			"xml",
+			"php",
+			"markdown",
+		},
+	},
+
+	-- change commentstring according to the lang
+	{
+		"JoosepAlviste/nvim-ts-context-commentstring",
+		event = "InsertEnter",
+		ft = {
+			"html",
+			"javascript",
+			"typescript",
+			"javascriptreact",
+			"typescriptreact",
+			"vue",
+			"tsx",
+			"jsx",
+			"php",
+			"css",
+			"scss",
+		},
+	},
+
+	-- highligh other uses of the word under the cursor
+	{
+		"RRethy/vim-illuminate",
+		config = function()
+			require("illuminate").configure({
+				filetypes_denylist = { "telescope", "NvimTree" },
+				modes_denylist = { "i", "v" },
+				large_file_cutoff = 3000,
+				min_count_to_highlight = 2,
+			})
+		end,
+		init = function()
+			vim.defer_fn(function()
+				require("lazy").load({ plugins = { "vim-illuminate" } })
+			end, 0)
+		end,
+	},
+}
+
+require("lazy").setup(plugins, opts)

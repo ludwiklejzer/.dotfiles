@@ -1,3 +1,5 @@
-require('core.options')
-require('core.mappings')
-require('core.autocmds')
+-- Enable fast loader
+vim.loader.enable()
+
+require("core")
+require("plugins")
