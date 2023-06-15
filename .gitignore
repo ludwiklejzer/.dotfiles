@@ -31,6 +31,7 @@ archlinux/.config/ncmpcpp/*
 
 # nvim
 archlinux/.config/nvim/*
+archlinux/.config/nvim/spell/*.spl
 !archlinux/.config/nvim/init.lua
 !archlinux/.config/nvim/lua
 
