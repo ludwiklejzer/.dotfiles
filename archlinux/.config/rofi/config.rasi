@@ -3,7 +3,7 @@ configuration {
 	location: 2;
 	yoffset: 45;
 	lines: 5;
-	font: "SpaceMono Nerd Font Mono 9";
+	font: "JetBrainsMono Nerd Font 9";
 	fixed-num-lines: false;
 	terminal: "rofi-sensible-terminal";
 	ssh-client: "ssh";
@@ -68,31 +68,52 @@ configuration {
 @import "~/.cache/wal/colors-rofi-dark"
 
 window {
-	width: 420px;
+	width: 450;
+	padding: 0;
 	border: 1px;
 	border-color: #292929;
-	padding: 20px;
-	border-radius: 5px;
+	border-radius: 0px;
 }
 
 inputbar {
-	margin: 0 0 10px 0;
+	background-color: rgba(255,255,255,0.03);
+	padding: 20px;
+	children: [ "prompt", "entry" ];
 }
 
-listview {
-	scrollbar: false;
-	lines: 5;
+prompt {
+	margin: 0 20px 0 0;
+	background-color: transparent;
+}
+
+textbox-prompt-colon {
+    enabled: false;
 }
 
 entry {
 	placeholder: "";
+	background-color: transparent;
 }
 
-prompt {
-	padding: 0 5px;
-	margin: 0;
+listview {
+	padding: 5px 10px 10px 10px;
+	scrollbar: false;
+	lines: 1;
+	columns: 4;
 }
 
 element {
 	padding: 10px 10px;
+	margin: 0;
+}
+
+element selected.normal {
+	background-color: rgba(255,255,255,0.05);
+	border-radius: 100px;
+}
+
+element-text {
+	text-align: center;
+	vertical-align: 0.5;
+	horizontal-align: 0.5;
 }
