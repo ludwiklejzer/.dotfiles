@@ -5,7 +5,7 @@
     "bc",
     "calibre",
     "cmatrix",
-    "alacritty",
+    "wezterm",
     "android-tools",
     "feh",
     "git",
@@ -17,7 +17,6 @@
     "xf86-input-synaptics",
     "vulkan-intel",
     "vulkan-icd-loader",
-    "qemu",
     "bspwm",
     "sxhkd",
     "os-prober",
@@ -25,10 +24,9 @@
     "zsh",
     "pipewire",
     "pipewire-pulse",
-    "pipewire-media-session",
+    "wireplumber",
     "pulsemixer",
     "exa",
-    "jq",
     "stow",
     "ffmpeg",
     "rofi",
@@ -38,7 +36,8 @@
     "flameshot",
     "libnotify",
     "dunst",
-    "qbittorrent",
+    "deluge-gtk",
+    "yt-dlp",
     "tmux",
     "mpv",
     "tree",
@@ -68,22 +67,14 @@
     "python-pywal",
     "polybar",
     "asciiquarium",
-    "youtube-dl",
     "zenity"
   ],
   "aur": [
+    "neovim-nightly-bin",
     "pick-colour-picker",
     "asdf-vm",
-    "picom-animations-git",
     "jmtpfs",
     "pandoc-bin",
     "brave-bin"
-  ],
-  "npm": [
-    "vscode-langservers-extracted",
-    "cssmodules-language-server",
-    "bash-language-server",
-    "prettier"
-  ],
-  "dotfiles": []
+  ]
 }
