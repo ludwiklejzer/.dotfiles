@@ -4,7 +4,7 @@
 
 # terminal emulator
 super + Return
-	alacritty
+	wezterm
 
 # program launcher
 super + @space
@@ -44,7 +44,11 @@ super + shift + n
 
 # bookmarks
 super + shift + b
-	xdotool type "$(cat $XDG_DATA_HOME/bookmarks | rofi -dmenu | cut -d' ' -f1)"
+	xdotool type "$(cat $XDG_DATA_HOME/bookmarks | tr -s ' ' | cut -d'@' -f1 | rofi -dmenu | grep -f - $XDG_DATA_HOME/bookmarks | cut -d'@' -f2 | tr -d ' ')"
+
+# open browser
+super + b
+	$BROWSER
 
 #
 # bspwm hotkeys
