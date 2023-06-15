@@ -21,14 +21,15 @@ if [ "$(uname -n)" != archlinux ]; then
 	exit 1
 fi
 
-clear
-echo "Testing internet connection"
-if [ "$(
-	ping -c 1 -q google.com >/dev/null
-	echo $?
-)" != 0 ]; then
-	echo "${RED}Please, connect to some network${RESET}"
-	exit 1
+if [ ! "$(command -v jq)" ]; then
+	clear
+	printf "The %sjq%s program is necessary to proceed. Do you want to install it? %s[Y/n] %s" "${BLUE}" "${RESET}" "$BOLD" "$RESET"
+	read -r JQ_SETUP
+	JQ_SETUP=$(echo "$JQ_SETUP" | tr '[:upper:]' '[:lower:]')
+	if [ "$JQ_SETUP" != "y" ] && [ "$JQ_SETUP" != "" ]; then exit 1; fi
+	echo "Installing..."
+	pacman -Syu --noconfirm >/dev/null
+	pacman -S jq --needed --noconfirm >/dev/null
 fi
 
 pacman_install() {
@@ -41,7 +42,7 @@ pacman_install() {
 	fi
 
 	pacman -Syu --noconfirm
-	jq -r '.pacman[]' software_list.json | pacman -S - --needed
+	jq -r '.pacman[]' software_list.json | pacman -S - --needed --noconfirm
 }
 
 aur_install() {
@@ -53,20 +54,13 @@ aur_install() {
 		exit 1
 	fi
 
-	git clone https://aur.archlinux.org/yay.git
-	cd yay && makepkg -si --noconfirm && cd - && rm -rf yay
-	jq -r '.aur[]' software_list.json | yay -S - --needed
-}
-
-npm_install() {
-	clear
-
-	if command -v node >/dev/null; then
-		echo "${BOLD}Installing NPM global packages..."
-		jq -r '.aur[]' software_list.json | npm install -g -
-	else
-		echo "You need to install NodeJS"
+	# If yay is not present, install it
+	if [ ! "$(command -v yay)" ]; then
+		git clone https://aur.archlinux.org/yay.git
+		cd yay && makepkg -si --noconfirm && cd - && rm -rf yay
 	fi
+
+	jq -r '.aur[]' software_list.json | yay -S - --needed
 }
 
 dotfiles_install() {
@@ -101,10 +95,6 @@ choose_install() {
 		aur_install
 		;;
 	3)
-		confirm_installation npm
-		npm_install
-		;;
-	4)
 		confirm_installation dotfiles
 		dotfiles_install
 		;;
@@ -126,7 +116,6 @@ ${BOLD}Select a ${GREEN}NUMBER${RESET} ${BOLD}to proceed the installation${RESET
 
 ${BOLD}${GREEN}|${RESET} ${BOLD}1 - PACMAN${RESET}
 ${BOLD}${GREEN}|${RESET} ${BOLD}2 - AUR${RESET}
-${BOLD}${GREEN}|${RESET} ${BOLD}3 - NPM${RESET}
 ${BOLD}${GREEN}|${RESET} ${BOLD}4 - DOTFILES${RESET}
 
 EOL
