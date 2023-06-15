@@ -59,6 +59,7 @@ alias myip='echo "\n\033[91mLocal IP\033[0m" && ip -br -c a && echo "\n\033[91mP
 alias note="cd ~/Sync/wiki && vim -c ':VimwikiIndex'"
 alias notes="cd ~/Sync/wiki && vim -c ':Files'"
 alias wmclass="xprop | grep WM_CLASS"
+alias rec_audio="ffmpeg -f pulse -i default $(date +%Y-%m-%d_%H:%M).mp3"
 
 # Descobrir como resolver o stuttering
 alias screenrecorder="ffmpeg -f x11grab -s 1366x768 -i :0.0+0,0 -f pulse -i 0 -filter:a "volume=5.0" out.mkv"
