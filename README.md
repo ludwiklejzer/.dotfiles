@@ -16,7 +16,7 @@ sudo pacman -S stow
 **2. Clone the repo**
 
 ```bash
-git clone https://github.com/LuizLazaro/dotfiles.git && cd dotfiles
+git clone https://github.com/ludwiklejzer/.dotfiles.git && cd .dotfiles
 ```
 
 **3. Create the symlinks using stow**
