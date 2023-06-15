@@ -1,3 +1,4 @@
+# barriers -a 192.168.100.188 --disable-crypto -l /var/log/barrier.log -c /home/ludwiklejzer/.config/barrier/barrier.conf &
 picom --experimental-backends --animations & # compositor
 wal -R &                               # set wallpaper and colors
 setxkbmap br -option caps:swapescape & # change esc by capslock
