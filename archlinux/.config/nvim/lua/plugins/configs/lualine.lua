@@ -1,56 +1,52 @@
-local wally_colors = require("wally.colors")
-local wally_config = require("wally.config")
-local colors = wally_colors.setup(wally_config)
-
-local wally = {
+local retrolight = {
 	normal = {
-		a = { bg = colors.blue, fg = colors.bg },
-		b = { bg = "NONE", fg = colors.blue },
-		c = { bg = "NONE", fg = colors.blue7 },
-		x = { bg = "NONE", fg = colors.blue7 },
-		y = { bg = "NONE", fg = colors.blue },
-		z = { bg = colors.blue, fg = colors.bg },
+		a = { bg = "#222222", fg = "#DCDAD5" },
+		b = { bg = "#222222", fg = "#DCDAD5" },
+		c = { bg = "#222222", fg = "#DCDAD5" },
+		x = { bg = "#222222", fg = "#DCDAD5" },
+		y = { bg = "#222222", fg = "#DCDAD5" },
+		z = { bg = "#222222", fg = "#DCDAD5" },
 	},
-	insert = {
-		a = { bg = colors.red, fg = colors.bg },
-		b = { bg = "NONE", fg = colors.red },
-		c = { bg = "NONE", fg = colors.red1 },
-		x = { bg = "NONE", fg = colors.red1 },
-		y = { bg = "NONE", fg = colors.red },
-		z = { bg = colors.red, fg = colors.bg },
-	},
-	visual = {
-		a = { bg = colors.green, fg = colors.bg },
-		b = { bg = "NONE", fg = colors.green },
-		c = { bg = "NONE", fg = colors.green2 },
-		x = { bg = "NONE", fg = colors.green2 },
-		y = { bg = "NONE", fg = colors.green },
-		z = { bg = colors.green, fg = colors.bg },
-	},
-	replace = {
-		a = { bg = colors.magenta, fg = colors.bg },
-		b = { bg = "NONE", fg = colors.magenta },
-		c = { bg = "NONE", fg = colors.purple },
-		x = { bg = "NONE", fg = colors.purple },
-		y = { bg = "NONE", fg = colors.magenta },
-		z = { bg = colors.magenta, fg = colors.bg },
-	},
-	command = {
-		a = { bg = colors.cyan, fg = colors.bg },
-		b = { bg = "NONE", fg = colors.cyan },
-		c = { bg = "NONE", fg = colors.blue1 },
-		x = { bg = "NONE", fg = colors.blue1 },
-		y = { bg = "NONE", fg = colors.cyan },
-		z = { bg = colors.cyan, fg = colors.bg },
-	},
-	inactive = {
-		a = { bg = colors.blue, fg = colors.bg },
-		b = { bg = "NONE", fg = colors.blue },
-		c = { bg = "NONE", fg = colors.blue7 },
-		x = { bg = "NONE", fg = colors.blue7 },
-		y = { bg = "NONE", fg = colors.blue },
-		z = { bg = colors.blue, fg = colors.bg },
-	},
+	-- insert = {
+	-- 	a = { bg = "#222222", fg = "#DCDAD5" },
+	-- 	b = { bg = "#222222", fg = "#DCDAD5" },
+	-- 	c = { bg = "#222222", fg = "#DCDAD5" },
+	-- 	x = { bg = "#222222", fg = "#DCDAD5" },
+	-- 	y = { bg = "#222222", fg = "#DCDAD5" },
+	-- 	z = { bg = "#222222", fg = "#DCDAD5" },
+	-- },
+	-- visual = {
+	-- 	a = { bg = "#222222", fg = "#DCDAD5" },
+	-- 	b = { bg = "#222222", fg = "#DCDAD5" },
+	-- 	c = { bg = "#222222", fg = "#DCDAD5" },
+	-- 	x = { bg = "#222222", fg = "#DCDAD5" },
+	-- 	y = { bg = "#222222", fg = "#DCDAD5" },
+	-- 	z = { bg = "#222222", fg = "#DCDAD5" },
+	-- },
+	-- replace = {
+	-- 	a = { bg = "#222222", fg = "#DCDAD5" },
+	-- 	b = { bg = "#222222", fg = "#DCDAD5" },
+	-- 	c = { bg = "#222222", fg = "#DCDAD5" },
+	-- 	x = { bg = "#222222", fg = "#DCDAD5" },
+	-- 	y = { bg = "#222222", fg = "#DCDAD5" },
+	-- 	z = { bg = "#222222", fg = "#DCDAD5" },
+	-- },
+	-- command = {
+	-- 	a = { bg = "#222222", fg = "#DCDAD5" },
+	-- 	b = { bg = "#222222", fg = "#DCDAD5" },
+	-- 	c = { bg = "#222222", fg = "#DCDAD5" },
+	-- 	x = { bg = "#222222", fg = "#DCDAD5" },
+	-- 	y = { bg = "#222222", fg = "#DCDAD5" },
+	-- 	z = { bg = "#222222", fg = "#DCDAD5" },
+	-- },
+	-- inactive = {
+	-- 	a = { bg = "#222222", fg = "#DCDAD5" },
+	-- 	b = { bg = "#222222", fg = "#DCDAD5" },
+	-- 	c = { bg = "#222222", fg = "#DCDAD5" },
+	-- 	x = { bg = "#222222", fg = "#DCDAD5" },
+	-- 	y = { bg = "#222222", fg = "#DCDAD5" },
+	-- 	z = { bg = "#222222", fg = "#DCDAD5" },
+	-- },
 }
 local function lsp_clients()
 	local active_clients = vim.lsp.get_active_clients()
@@ -68,7 +64,7 @@ end
 
 local mode = {
 	"mode",
-	separator = { left = "", right = "" },
+	separator = { left = "", right = "" },
 	fmt = function(str)
 		if str == "NORMAL" then
 			return " " .. str
@@ -106,18 +102,22 @@ local diagnostics = {
 	colored = false,
 }
 
+local filesize = {
+	"filesize",
+}
+
 local filetype = {
 	"filetype",
 	colored = false,
-	icons_enabled = false,
+	icons_enabled = true,
 }
 
 local fileformat = {
 	"fileformat",
 	symbols = {
-		unix = " Unix", -- e712
-		dos = " DOS", -- e70f
-		mac = " MacOS", -- e711
+		unix = " Unix", -- e712
+		dos = "󰨡 DOS", -- e70f
+		mac = " MacOS", -- e711
 	},
 }
 
@@ -136,19 +136,12 @@ local macro = {
 local progress = {
 	"progress",
 	icon = "",
-	separator = { left = "", right = "" },
+	separator = { left = "", right = "" },
 }
 
-local search_count = {
-	"search_count",
+local searchcount = {
+	"searchcount",
 	icon = "",
-	fmt = function()
-		local results = vim.fn.searchcount({ maxcount = 0 })
-		local noh = vim.opt.hlsearch._value
-		if results.total > 0 then
-			return results.current .. "," .. results.total
-		end
-	end,
 }
 
 local selection_count = {
@@ -169,6 +162,56 @@ local selection_count = {
 	end,
 }
 
+local navic = {
+	"navic",
+	-- Can be nil, "static" or "dynamic". This option is useful only when you have highlights enabled.
+	-- Many colorschemes don't define same backgroud for nvim-navic as their lualine statusline backgroud.
+	-- Setting it to "static" will perform a adjustment once when the component is being setup. This should
+	--   be enough when the lualine section isn't changing colors based on the mode.
+	-- Setting it to "dynamic" will keep updating the highlights according to the current modes colors for
+	--   the current section.
+	-- color_correction = nil,
+	color_correction = "static",
+
+	navic_opts = {
+		icons = {
+			File = "󰈙 ",
+			Module = " ",
+			Namespace = "󰌗 ",
+			Package = " ",
+			Class = "󰌗 ",
+			Method = "󰆧 ",
+			Property = " ",
+			Field = " ",
+			Constructor = " ",
+			Enum = "󰕘",
+			Interface = "󰕘",
+			Function = "󰊕 ",
+			Variable = "󰆧 ",
+			Constant = "󰏿 ",
+			String = "󰀬 ",
+			Number = "󰎠 ",
+			Boolean = "◩ ",
+			Array = "󰅪 ",
+			Object = "󰅩 ",
+			Key = "󰌋 ",
+			Null = "󰟢 ",
+			EnumMember = " ",
+			Struct = "󰌗 ",
+			Event = " ",
+			Operator = "󰆕 ",
+			TypeParameter = "󰊄 ",
+		},
+		highlight = false,
+		separator = " > ",
+		depth_limit = 0,
+		depth_limit_indicator = "..",
+		safe_output = true,
+		lazy_update_context = false,
+		click = false,
+	},
+}
+
 local buffers = {
 	"buffers",
 	fmt = function(str)
@@ -176,6 +219,9 @@ local buffers = {
 	end,
 	show_filename_only = true,
 	show_modified_status = true,
+	component_separators = { left = "", right = "" },
+	symbols = { alternate_file = "" },
+	use_mode_colors = true,
 
 	max_length = function()
 		return vim.o.columns
@@ -188,28 +234,19 @@ local buffers = {
 		lazy = "Lazy",
 	},
 
-	use_mode_colors = true,
-
 	buffers_color = {
-		inactive = { bg = colors.bg, fg = colors.grey },
+		inactive = { bg = "#DCDAD5", fg = "#AAAAAA" },
+		active = { bg = "#DCDAD5", fg = "#222222" },
 	},
-
-	separator = { left = "", right = "" },
-	section_separators = { left = "", right = "" },
-
-	symbols = { alternate_file = "" },
 }
 
 require("lualine").setup({
 	options = {
 		fmt = string.upper,
-		theme = wally,
+		theme = retrolight,
 		component_separators = { left = "/", right = "/" },
 		section_separators = { left = "", right = "" },
-		disabled_filetypes = {
-			statusline = {},
-			winbar = {},
-		},
+		disabled_filetypes = { statusline = {}, winbar = {} },
 		ignore_focus = {},
 		always_divide_middle = true,
 		globalstatus = true,
@@ -220,19 +257,40 @@ require("lualine").setup({
 		},
 	},
 	sections = {
+		lualine_a = { navic },
+		lualine_b = {},
+		lualine_c = {},
+		lualine_x = {},
+		lualine_y = {},
+		lualine_z = {},
+	},
+	inactive_sections = {
+		lualine_a = {},
+		lualine_b = {},
+		lualine_c = {},
+		lualine_x = {},
+		lualine_y = {},
+		lualine_z = {},
+	},
+	tabline = {
 		lualine_a = { mode },
 		lualine_b = { branch },
 		lualine_c = { diff, macro },
 		-- lualine_x = { diagnostics, lsp_clients },
 		lualine_x = { diagnostics },
-		lualine_y = { "filesize", filetype, fileformat, selection_count, search_count },
+		lualine_y = { filesize, filetype, fileformat, selection_count, searchcount },
 		lualine_z = { progress },
 	},
-	inactive_sections = {},
-	tabline = {
+	winbar = {
 		lualine_a = { buffers },
 	},
-	winbar = {},
-	inactive_winbar = {},
+	inactive_winbar = {
+		lualine_a = {},
+		lualine_b = {},
+		lualine_c = {},
+		lualine_x = {},
+		lualine_y = {},
+		lualine_z = {},
+	},
 	extensions = {},
 })

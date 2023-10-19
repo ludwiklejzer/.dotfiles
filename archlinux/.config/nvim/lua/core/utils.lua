@@ -43,57 +43,34 @@ M.setSpellLang = function(lang)
 	end
 end
 
+-- lazy loading
+M.lazy_load = function(plugin)
+	vim.schedule(function()
+		require("lazy").load({ plugins = plugin })
+
+		if plugin == "nvim-lspconfig" then
+			vim.cmd("silent! do FileType")
+		end
+	end, 0)
+end
+
 -- Globals
 
 _G.OpenSsl = {
-	encrypted_file_path = nil,
-
-	decrypt = function()
+	open = function()
 		local password = vim.fn.inputsecret("Password: ")
-		OpenSsl.encrypted_file_path = vim.fn.expand("%:p")
-
-		os.execute(
-			"openssl enc -d -aes-256-cbc -md sha512 -pbkdf2 -iter 100000 -salt -in "
-				.. vim.fn.expand("%:p")
-				.. " -out /tmp/"
-				.. vim.fn.expand("%:t")
-				.. " -pass pass:'"
+		vim.fn.execute(
+			":'[,']!openssl enc -a -d -aes-256-cbc -md sha512 -pbkdf2 -salt -iter 100000 -pass pass:'"
 				.. password
 				.. "'"
-		)
-
-		vim.fn.execute(":bd | e /tmp/" .. vim.fn.expand("%:t"))
-	end,
-
-	encrypt = function()
-		local password = vim.fn.inputsecret("Password: ")
-		local output_filename = vim.fn.input("File name: ")
-
-		os.execute(
-			"openssl enc -aes-256-cbc -md sha512 -pbkdf2 -iter 100000 -salt -in "
-				.. vim.fn.expand("%:p")
-				.. " -out "
-				.. output_filename
-				.. ".aes -pass pass:"
-				.. password
 		)
 	end,
 
 	save = function()
 		local password = vim.fn.inputsecret("Password: ")
-
-		os.execute(
-			"openssl enc -aes-256-cbc -md sha512 -pbkdf2 -iter 100000 -salt -in /tmp/"
-				.. vim.fn.expand("%:t")
-				.. " -out "
-				.. OpenSsl.encrypted_file_path
-				.. " -pass pass:"
-				.. password
+		vim.fn.execute(
+			":'[,']!openssl enc -a -aes-256-cbc -md sha512 -pbkdf2 -salt -iter 100000 -pass pass:'" .. password .. "'"
 		)
-	end,
-
-	exit = function()
-		os.execute("rm /tmp/" .. vim.fn.expand("%:t"))
 	end,
 }
 

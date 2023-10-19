@@ -2,7 +2,6 @@
   "pacman": [
     "acpilight",
     "aria2",
-    "bc",
     "calibre",
     "cmatrix",
     "wezterm",
@@ -30,6 +29,8 @@
     "stow",
     "ffmpeg",
     "rofi",
+    "rofi-calc",
+    "rofi-emoji",
     "unclutter",
     "neofetch",
     "fzf",

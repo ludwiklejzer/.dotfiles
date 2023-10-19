@@ -1,12 +1,13 @@
-# barriers -a 192.168.100.188 --disable-crypto -l /var/log/barrier.log -c /home/ludwiklejzer/.config/barrier/barrier.conf &
-picom --experimental-backends --animations & # compositor
-wal -R &                               # set wallpaper and colors
-setxkbmap br -option caps:swapescape & # change esc by capslock
+# barriers -a 192.168.2.2 --disable-crypto -l /tmp/barrier.log -c /home/ludwiklejzer/.config/barrier/barrier.conf &
+picom  & # compositor
+# dunst &
+setxkbmap -option caps:swapescape & # change esc by capslock
 redshift &                             # screen color temperature
-dunst &                                # notifications daemon
 xsetroot -cursor_name left_ptr &       # set cursor type
 unclutter &                            # hide mouse
-ibus-daemon -rxR &
-anki &                                 # srs flashcards
+deluged &
+# ping -c 1 192.168.2.3 &>/dev/null && sshfs ludwiklejzer@192.168.2.3:/home/ludwiklejzer e2220 &
+# wezterm start nvim -c "exe 'VimwikiIndex' | bd | e ~/wiki/Goals.md" &
 
-exec bspwm                             # window manager
+exec awesome                             # window manager
+# exec bspwm

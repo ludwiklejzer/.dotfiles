@@ -37,6 +37,7 @@ local options = {
 				prompt_position = "top",
 				preview_cutoff = 1,
 				mirror = false,
+				anchor = "S",
 			},
 		},
 	},

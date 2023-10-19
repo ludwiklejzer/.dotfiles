@@ -5,9 +5,9 @@ export XDG_STATE_HOME="$HOME/.local/state"
 export XDG_CACHE_HOME="$HOME/.cache"
 
 # FCITX5
-export GTK_IM_MODULE=xim
-export QT_IM_MODULE=ibus
-export XMODIFIERS=@im=ibus
+# export GTK_IM_MODULE=xim
+# export QT_IM_MODULE=ibus
+# export XMODIFIERS=@im=ibus
 
 # QT
 export QT_QPA_PLATFORMTHEME=qt6ct
@@ -22,13 +22,12 @@ export _Z_DATA="$XDG_DATA_HOME/z"
 
 # X11
 export XINITRC="$XDG_CONFIG_HOME/X11/xinitrc"
-export XAUTHORITY="$XDG_RUNTIME_DIR/.Xauthority"
+#export XAUTHORITY="$XDG_RUNTIME_DIR/.Xauthority"
 
 # ASDF
 export ASDF_DIR="/opt/asdf-vm"
 export ASDF_DATA_DIR="$XDG_CONFIG_HOME/asdf"
 export ASDF_CONFIG_FILE="$XDG_CONFIG_HOME/asdf/asdfrc"
-export ASDF_DEFAULT_TOOL_VERSIONS_FILENAME=".config/asdf/tool-versions"
 
 # WGET
 export WGETRC="$XDG_CONFIG_HOME/wget/wgetrc"
@@ -48,11 +47,16 @@ export LESSHISTFILE="$XDG_STATE_HOME/lesshst"
 export RANGER_LOAD_DEFAULT_RC="FALSE"
 
 # MISC
-export LANG="en_US.UTF-8"
+# export LANG="en_US.UTF-8"
+export LANG="pt_BR.UTF-8"
 export EDITOR="nvim"
-export TERMINAL="alacritty"
+export TERMINAL="wezterm"
 export BROWSER="brave"
 export LS_COLORS=ow="36;40:"
+
+# MESA
+# https://bugs.winehq.org/show_bug.cgi?id=50859
+# export MESA_GL_VERSION_OVERRIDE=4.5
 
 # run startx automatically on tty1
 if [[ -z $DISPLAY ]] && [[ $(tty) = /dev/tty1 ]]; then

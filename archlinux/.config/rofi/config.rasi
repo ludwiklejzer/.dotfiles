@@ -95,6 +95,11 @@ entry {
 	background-color: transparent;
 }
 
+textbox {
+		padding: 20px;
+		font: "JetBrainsMono Nerd Font bold 11";
+}
+
 listview {
 	padding: 5px 10px 10px 10px;
 	scrollbar: false;

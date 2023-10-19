@@ -1,5 +1,6 @@
 local opt = vim.opt
 local g = vim.g
+local o = vim.o
 
 g.mapleader = " "
 
@@ -24,7 +25,8 @@ opt.shortmess:append("c") -- avoid hit enter prompts
 opt.shortmess:append("sI") -- disable nvim intro
 opt.hidden = true -- allow edit buffer without save
 opt.inccommand = "split" -- command live preview
-opt.cul = false -- highlight the line of the cursor
+opt.cul = true -- highlight the line of the cursor
+opt.cursorlineopt = "both" -- highlight the line and number
 opt.showmode = false -- hide status mode
 opt.cmdheight = 0 -- command line height
 opt.clipboard = "unnamedplus" -- sync clipboard between OS and Neovim
@@ -52,8 +54,21 @@ opt.foldexpr = "nvim_treesitter#foldexpr()" -- expression used on folding
 opt.foldenable = true -- folding on VimEnter
 opt.foldlevelstart = 99 -- disable auto folding everything
 opt.foldtext = "v:lua.MyFoldText()" -- custom folding function
+opt.background = "light"
 
 function MyFoldText()
 	local line = vim.fn.getline(vim.v.foldstart)
 	return line .. " "
+end
+
+-- neovide config
+if vim.g.neovide then
+	o.guifont = "CartographCF Nerd Font,JetBrainsMono Nerd Font:h8"
+	o.linespace = 2
+	g.neovide_scroll_animation_length = 0.3
+	g.neovide_remember_window_size = false
+	g.neovide_padding_top = 0
+	g.neovide_padding_bottom = 0
+	g.neovide_padding_left = 0
+	g.neovide_padding_right = 0
 end

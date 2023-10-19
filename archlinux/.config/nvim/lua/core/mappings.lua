@@ -21,6 +21,12 @@ map("i", "<C-j>", "<Down>", { silent = true })
 map("i", "<C-k>", "<Up>", { silent = true })
 map("i", "<C-a>", "<Home>", { silent = true })
 
+map("i", "<S-Tab>", "<C-d>", { silent = true })
+
+-- add a semicolon to the end of a line
+map("i", "<A-l>", "<Esc>A;", { silent = true })
+map("n", "<A-l>", "A;<Esc>", { silent = true })
+
 -- resize window
 map("n", "<UP>", ":resize -2<CR>", { silent = true })
 map("n", "<DOWN>", ":resize +2<CR>", { silent = true })
@@ -46,8 +52,7 @@ map("v", "<A-k>", ":m '<-2<CR>gv=gv", { silent = true })
 map("t", "q", "<C-\\><C-n>:q!<CR>", { silent = true }) -- close terminal window
 map("t", "X", "<C-\\><C-n>:bd!<CR>", { silent = true }) -- close terminal buffer
 map("t", "<ESC><ESC>", "<C-\\><C-n>", { silent = true }) -- Go to normal mode on terminal
-map("n", "<C-s>", "<cmd> :w <CR>") -- save buffer
-map("i", "<C-s>", "<Esc>:w<CR>a") -- save buffer
+map({ "n", "i" }, "<C-s>", "<cmd> :w <CR>") -- save buffer
 map("n", '"', ":below 10sp term://zsh<CR>") -- open terminal
 map("n", "q", ":quit<CR>", { silent = true }) -- quit window
 map("n", "<S-q>", ":quitall!<CR>", { silent = true }) -- quit all windows without save
@@ -56,7 +61,6 @@ map("n", "<C-j>", ":bn<CR>", { silent = true }) -- next buffer
 map("n", "<C-k>", ":bp<CR>", { silent = true }) -- prev buffer
 map("n", "<Esc>", "<cmd> :noh <CR>", { silent = true }) -- hide search highlighting
 map("n", "<C-q>", "q", { silent = true }) -- record macro
-map("i", "<C-o>", "<CR>", { silent = true }) -- fake enter
 
 -------------
 -- PLUGINS --
@@ -72,8 +76,8 @@ map("n", "<F9>", ":TZAtaraxis<CR>", { silent = true })
 map("n", "<Leader>ww", ":VimwikiIndex<CR>", { silent = true })
 
 -- nvim comment
-map("n", "gcc", ":CommentToggle<CR>", { silent = true })
-map("v", "gc", ":CommentToggle<CR>", { silent = true })
+-- map("n", "gcc", ":CommentToggle<CR>", { silent = true })
+-- map("v", "gc", ":CommentToggle<CR>", { silent = true })
 
 -- telescope
 map("n", "<Leader>fb", ":Telescope file_browser path=%:p:h select_buffer=true<CR>", { silent = true })
@@ -126,3 +130,8 @@ map("n", "<space>f", "<cmd>lua vim.lsp.buf.format()<CR>")
 map("n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<CR>")
 map("n", "]d", "<cmd>lua vim.diagnostic.goto_next()<CR>")
 map("n", "<space>q", "<cmd>lua vim.diagnostic.setloclist()<CR>")
+
+-- nvim-dap
+map("n", "<leader>dt", ':lua require("dapui").toggle() <CR>')
+map("n", "<leader>db", ":DapToggleBreakpoint <CR>")
+map("n", "<leader>dc", ":DapContinue <CR>")

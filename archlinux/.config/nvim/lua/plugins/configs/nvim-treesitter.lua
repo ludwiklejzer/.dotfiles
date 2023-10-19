@@ -1,14 +1,9 @@
-require("nvim-treesitter.configs").setup({
-	context_commentstring = {
-		enable = true,
-	},
-	autotag = {
-		enable = true,
-	},
-	fold = {
-		enable = true,
-	},
+local options = {
+	context_commentstring = { enable = true },
+	context = { enable = true },
+	fold = { enable = true },
 	indent = { enable = true },
+	highlight = { enable = true, use_languagetree = true },
 	ensure_installed = {
 		"lua",
 		"c",
@@ -32,5 +27,6 @@ require("nvim-treesitter.configs").setup({
 		"vue",
 		"vim",
 	},
-	highlight = { enable = true, use_languagetree = true },
-})
+}
+
+return options

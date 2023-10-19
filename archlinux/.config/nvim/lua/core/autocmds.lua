@@ -3,12 +3,20 @@ local utils = require("core.utils")
 local autocmd = utils.autocmd
 local augroup = utils.augroup
 
+-- highlight cul number
+autocmd("BufEnter", nil, "*", ":hi CursorLineNr guibg=#E7ECF0")
+
+-- set line wrap and line break on md and txt files
+autocmd("FileType", nil, "markdown,text,json", ":set linebreak wrap")
+
 -- encrypted files
 augroup("OpenSSL", true)
-autocmd("BufReadPost", "OpenSSL", "*.aes", ":lua OpenSsl.decrypt()")
-autocmd("BufWritePost", "OpenSSL", "*.aes", ":lua OpenSsl.save()")
-autocmd("BufUnload", "OpenSSL", "*.aes", ":lua OpenSsl.exit()")
-autocmd("BufEnter", "OpenSSL", "*.aes", ":setlocal noundofile shada=")
+autocmd({ "BufReadPre", "FileReadPre" }, "OpenSSL", "*.aes", "lua require('cmp').setup.buffer({ sources = {} })")
+autocmd({ "BufReadPre", "FileReadPre" }, "OpenSSL", "*.aes", ":setlocal noswapfile noundofile nobackup binary shada=")
+autocmd({ "BufReadPost", "FileReadPost" }, "OpenSSL", "*.aes", ":lua OpenSsl.open()")
+autocmd({ "BufWritePre", "FileWritePre" }, "OpenSSL", "*.aes", ":lua OpenSsl.save()")
+autocmd({ "BufReadPost", "FileReadPost" }, "OpenSSL", "*.aes", ":setlocal nobinary")
+autocmd({ "BufWritePost", "FileWritePost" }, "OpenSSL", "*.aes", ":silent undo")
 
 -- set vimwiki folding method to `syntax` because treesitter
 -- `expr` does not support folding headers

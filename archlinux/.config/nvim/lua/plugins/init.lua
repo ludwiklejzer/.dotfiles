@@ -16,13 +16,32 @@ vim.opt.rtp:prepend(lazypath)
 
 local plugins = {
 
+	-- FIND IF IT REALLY WORKS
+	-- open large files fast
+	{
+		"vim-scripts/LargeFile",
+		init = function() end, -- necessary because plugin does not have a setup function
+		cond = function()
+			local filepath = vim.fn.expand("%")
+			local filesize = vim.fn.getfsize(filepath) / (1024 * 1024)
+			local max_filesize = 5 -- megabytes
+
+			if filesize > max_filesize then
+				vim.g.LargeFile = max_filesize -- plugin minimum file size to run
+				return true
+			end
+		end,
+	},
+
 	-- lua library
 	"nvim-lua/plenary.nvim",
 
 	-- manage LSP servers, DAP servers, linters, and formatters
 	{
 		"williamboman/mason.nvim",
-		config = function()
+		event = "VeryLazy",
+		cmd = { "Mason", "MasonInstall", "MasonLog", "MasonInstallAll", "MasonUpdate" },
+		opts = function()
 			require("plugins.configs.mason")
 		end,
 	},
@@ -36,22 +55,15 @@ local plugins = {
 				vim.cmd("silent! do FileType")
 			end, 0)
 		end,
-		config = function()
-			local servers = vim.tbl_keys(require("lspconfig.configs"))
-			require("mason-lspconfig").setup({
-				-- ensure_installed = servers,
-			})
+		opts = function()
+			require("plugins.configs.mason-lspconfig")
 		end,
 	},
 
 	-- inject LSP diagnostics, code actions, and more
 	{
 		"jose-elias-alvarez/null-ls.nvim",
-		init = function()
-			vim.schedule(function()
-				require("lazy").load({ plugins = "null-ls.nvim" })
-			end, 0)
-		end,
+		event = "VeryLazy",
 		config = function()
 			require("plugins.configs.null-ls")
 		end,
@@ -62,13 +74,10 @@ local plugins = {
 		"jayp0521/mason-null-ls.nvim",
 		cmd = "NullLsInstall",
 		build = ":NullLsInstall",
-		config = function()
-			require("mason-null-ls").setup({
-				automatic_installation = true,
-			})
-		end,
+		opts = { automatic_installation = true },
 	},
 
+	-- EDIT CONFIG FILE
 	-- language server protocol
 	{
 		"neovim/nvim-lspconfig",
@@ -80,9 +89,19 @@ local plugins = {
 	-- parser generator (highlight, folding etc)
 	{
 		"nvim-treesitter/nvim-treesitter",
+		lazy = false,
 		build = ":TSUpdate",
-		config = function()
+		opts = function()
 			require("plugins.configs.nvim-treesitter")
+		end,
+	},
+
+	-- show code context
+	{
+		"nvim-treesitter/nvim-treesitter-context",
+		event = "VeryLazy",
+		opts = function()
+			require("plugins.configs.nvim-treesitter-context")
 		end,
 	},
 
@@ -91,25 +110,6 @@ local plugins = {
 		"hrsh7th/nvim-cmp",
 		event = "InsertEnter",
 		dependencies = {
-			-- snippets engine
-			{
-				"L3MON4D3/LuaSnip",
-				version = "<CurrentMajor>.*",
-				build = "make install_jsregexp",
-				dependencies = "rafamadriz/friendly-snippets", -- snippets library
-				config = function()
-					require("plugins.configs.luasnip")
-				end,
-			},
-
-			-- auto close pairs (), [], {}, "", ''
-			{
-				"windwp/nvim-autopairs",
-				config = function()
-					require("plugins.configs.nvim-autopairs")
-				end,
-			},
-
 			-- cmp sources
 			"saadparwaiz1/cmp_luasnip", -- luasnip completion
 			"hrsh7th/cmp-nvim-lua", -- neovim Lua API
@@ -118,31 +118,99 @@ local plugins = {
 			"hrsh7th/cmp-path", -- complete paths
 			"f3fora/cmp-spell", -- spell checking
 			"hrsh7th/cmp-calc", -- math calculation
+			"hrsh7th/cmp-emoji",
+
+			-- ai completion
+			{
+				"Exafunction/codeium.nvim",
+				config = function()
+					require("codeium").setup({})
+				end,
+			},
 		},
 		config = function()
 			require("plugins.configs.cmp")
 		end,
 	},
 
-	-- font icons
+	-- snippets engine
 	{
-		"nvim-tree/nvim-web-devicons",
+		"L3MON4D3/LuaSnip",
+		event = "InsertEnter",
+		version = "v2.*",
+		build = "make install_jsregexp",
+		dependencies = "rafamadriz/friendly-snippets", -- snippets library
 		config = function()
-			require("nvim-web-devicons").setup()
+			require("plugins.configs.luasnip")
 		end,
 	},
 
+	-- auto close pairs (), [], {}, "", ''
+	{
+		"windwp/nvim-autopairs",
+		event = "InsertEnter",
+		config = function()
+			require("plugins.configs.nvim-autopairs")
+		end,
+	},
+
+	-- lsp hint as you type
+	{
+		"ray-x/lsp_signature.nvim",
+		event = "InsertEnter",
+		config = function()
+			require("plugins.configs.lsp_signature")
+		end,
+	},
+
+	-- font icons
+	{
+		"nvim-tree/nvim-web-devicons",
+		event = "VeryLazy",
+	},
+
+	-- REVIEW CODE
 	-- statusline
 	{
 		"nvim-lualine/lualine.nvim",
-		init = function()
-			vim.schedule(function()
-				require("lazy").load({ plugins = "lualine.nvim" })
-			end, 0)
-		end,
+		priority = 1000,
+		lazy = false,
 		config = function()
 			require("plugins.configs.lualine")
 		end,
+		-- needs to be loaded as a dependency so it does not overwrite lualine theme
+		dependencies = {
+			{
+				"projekt0n/github-nvim-theme",
+				opts = {
+					options = {
+						transparent = true,
+						module_default = false,
+						darken = {
+							floats = false,
+							sidebars = { enable = false },
+						},
+						styles = {
+							comments = "italic",
+							keywords = "italic",
+						},
+						modules = {
+							gitsigns = false,
+						},
+					},
+				},
+				config = function()
+					vim.cmd("colorscheme github_light_high_contrast")
+				end,
+			},
+		},
+	},
+
+	-- breadcrumbs
+	{
+		"SmiteshP/nvim-navic",
+		event = "VeryLazy",
+		opts = { lsp = { auto_attach = true, preference = nil }, click = true },
 	},
 
 	-- fuzzy finder
@@ -154,10 +222,101 @@ local plugins = {
 		end,
 	},
 
-	-- file browser
+	-- telescope file browser
 	{
 		"nvim-telescope/telescope-file-browser.nvim",
 		cmd = "Telescope file_browser",
+	},
+
+	-- auto close/rename tag
+	{
+		"windwp/nvim-ts-autotag",
+		event = "InsertEnter",
+		config = function()
+			vim.cmd("TSEnable autotag")
+		end,
+	},
+
+	-- easy motion
+	{
+		"phaazon/hop.nvim",
+		branch = "v2",
+		cmd = "HopChar1",
+		opts = { keys = "etovxqpdygfblzhckisuran" },
+	},
+
+	-- add, replace and remove surround characters
+	{
+		"ur4ltz/surround.nvim",
+		event = "InsertEnter",
+		opts = { mappings_style = "sandwich" },
+	},
+
+	-- comment code blocks
+	{
+		lazy = false,
+		"numToStr/Comment.nvim",
+		opts = { toggler = { line = "gcc", block = "gbc" } },
+	},
+
+	-- change commentstring according to the lang
+	{
+		"JoosepAlviste/nvim-ts-context-commentstring",
+		ft = {
+			"html",
+			"javascript",
+			"typescript",
+			"javascriptreact",
+			"typescriptreact",
+			"vue",
+			"tsx",
+			"jsx",
+			"php",
+			"css",
+			"scss",
+		},
+	},
+
+	-- add support to editorconfig
+	{
+		"gpanders/editorconfig.nvim",
+		event = "VeryLazy",
+	},
+
+	-- get the node type under the cursor
+	{ "roobert/node-type.nvim" },
+
+	-- handle csv files
+	{
+		"cameron-wags/rainbow_csv.nvim",
+		config = function()
+			require("rainbow_csv").setup()
+		end,
+		ft = { "csv", "tsv", "csv_semicolon", "csv_whitespace", "csv_pipe", "rfc_csv", "rfc_semicolon" },
+		cmd = { "RainbowDelim", "RainbowDelimSimple", "RainbowDelimQuoted", "RainbowMultiDelim" },
+	},
+
+	-- show colors code on the document
+	{
+		"norcalli/nvim-colorizer.lua",
+		event = "VeryLazy",
+		config = function()
+			require("colorizer").setup()
+
+			-- execute colorizer as soon as possible
+			vim.defer_fn(function()
+				require("colorizer").attach_to_buffer(0)
+			end, 0)
+		end,
+	},
+
+	-- highligh other uses of the word under the cursor
+	{
+		"RRethy/vim-illuminate",
+		event = "VeryLazy",
+		config = function()
+			require("plugins.configs.illuminate")
+		end,
 	},
 
 	-- git symbols (added, deleted, changed) in the signcolumn
@@ -179,148 +338,29 @@ local plugins = {
 				end,
 			})
 		end,
-		config = function()
+		opts = function()
 			require("plugins.configs.gitsigns")
-		end,
-	},
-
-	-- sidebar file navigation
-	{
-		"nvim-tree/nvim-tree.lua",
-		cmd = { "NvimTreeToggle", "NvimTreeFocus" },
-		version = "*",
-		config = function()
-			require("plugins.configs.nvim-tree")
 		end,
 	},
 
 	-- indent lines guides
 	{
 		"lukas-reineke/indent-blankline.nvim",
-		init = function()
-			vim.schedule(function()
-				require("lazy").load({ plugins = "indent-blankline.nvim" })
-			end, 0)
-		end,
+		main = "ibl",
+		event = "VeryLazy",
 		config = function()
 			require("plugins.configs.indent-blankline")
 		end,
 	},
 
-	-- hide screen elements
+	-- HIDE top dir path
+	-- sidebar file navigation
 	{
-		"Pocco81/TrueZen.nvim",
-		cmd = { "TZAtaraxis" },
-		config = function()
-			require("true-zen").setup({
-				modes = {
-					ataraxis = {
-						callbacks = {
-							close_pos = function()
-								require("lualine").hide({ unhide = true })
-								vim.wo.linebreak = false
-								vim.wo.wrap = false
-							end,
-							open_pre = function()
-								require("lualine").hide()
-								vim.wo.linebreak = true
-								vim.wo.wrap = true
-							end,
-						},
-					},
-				},
-			})
-		end,
-	},
-
-	-- comment code blocks
-	{
-		"terrortylor/nvim-comment",
-		cmd = { "CommentToggle" },
-		config = function()
-			require("nvim_comment").setup({ comment_empty = false })
-		end,
-	},
-
-	-- colorscheme based on wallpaper
-	{
-		"atalazer/wally.nvim",
-		lazy = false,
-		priority = 1000,
-		build = "./setup.sh",
-		init = function()
-			require("wally").colorscheme()
-			require("plugins.configs.custom_colors")
-		end,
-		config = function()
-			vim.g.wally_wal_dir = "~/.cache/wal"
-			vim.g.wally_italic_comments = true
-			vim.g.wally_italic_variables = false
-			vim.g.wally_italic_keywords = true
-			vim.g.wally_italic_functions = false
-			vim.g.wally_sidebars = { "qf", "vista_kind", "terminal", "Nvimtree", "Trouble", "packer" }
-		end,
-	},
-
-	-- colorscheme
-	{
-		"catppuccin/nvim",
-		lazy = false,
-		name = "catppuccin",
-		config = function()
-			require("catppuccin").setup({
-				flavour = "mocha",
-				transparent_background = false,
-				dim_inactive = {
-					enabled = false,
-					shade = "dark",
-					percentage = 0.15,
-				},
-				no_italic = false, -- Force no italic
-				no_bold = false, -- Force no bold
-				styles = {
-					comments = { "italic" },
-					conditionals = { "italic" },
-					loops = {},
-					functions = {},
-					keywords = {},
-					strings = {},
-					variables = {},
-					numbers = {},
-					booleans = {},
-					properties = {},
-					types = {},
-					operators = {},
-				},
-				color_overrides = {},
-				custom_highlights = {},
-				integrations = {
-					cmp = true,
-					gitsigns = true,
-					nvimtree = true,
-					telescope = true,
-					notify = false,
-					mini = false,
-					-- For more plugins integrations please scroll down (https://github.com/catppuccin/nvim#integrations)
-				},
-			})
-		end,
-	},
-
-	-- open large files fast
-	{
-		"vim-scripts/LargeFile",
-		init = function()
-			local filepath = vim.fn.expand("%")
-			local filesize = vim.fn.getfsize(filepath) / (1024 * 1024)
-			local max_filesize = 20 -- megabytes
-
-			-- plugin minimum file size to run
-			vim.g.LargeFile = max_filesize
-
-			if filesize > max_filesize then
-				require("lazy").load({ plugins = { "LargeFile" } })
-			end
+		"nvim-tree/nvim-tree.lua",
+		cmd = { "NvimTreeToggle", "NvimTreeFocus" },
+		version = "*",
+		opts = function()
+			require("plugins.configs.nvim-tree")
 		end,
 	},
 
@@ -333,50 +373,17 @@ local plugins = {
 		end,
 	},
 
-	-- easy motion
-	{
-		"phaazon/hop.nvim",
-		branch = "v2",
-		cmd = "HopChar1",
-		config = function()
-			require("hop").setup({ keys = "etovxqpdygfblzhckisuran" })
-		end,
-	},
-
-	-- add, replace and remove surround characters
-	{
-		"ur4ltz/surround.nvim",
-		event = "InsertEnter",
-		opts = { mappings_style = "sandwich" },
-	},
-
 	-- discord rich presence
-	{
-		"andweeb/presence.nvim",
-		cond = function()
-			local is_discord_running = vim.fn.systemlist("pgrep -x discord")
-			return is_discord_running[1]
-		end,
-		init = function()
-			vim.defer_fn(function()
-				require("lazy").load({ plugins = { "presence.nvim" } })
-			end, 0)
-		end,
-	},
-
-	-- show colors code on the document
-	{
-		"norcalli/nvim-colorizer.lua",
-		init = function()
-			vim.defer_fn(function()
-				require("lazy").load({ plugins = { "nvim-colorizer.lua" } })
-			end, 0)
-		end,
-		config = function()
-			require("colorizer").setup()
-			require("colorizer").attach_to_buffer()
-		end,
-	},
+	-- {
+	-- 	"andweeb/presence.nvim",
+	-- 	event = "VeryLazy",
+	-- 	cond = function()
+	-- 		local is_discord_running = vim.fn.systemlist("pgrep -x Discord")
+	-- 		if is_discord_running[1] then
+	-- 			return true
+	-- 		end
+	-- 	end,
+	-- },
 
 	-- qml syntax highlighting
 	{
@@ -384,69 +391,9 @@ local plugins = {
 		ft = "qml",
 	},
 
-	-- lsp hint as you type
 	{
-		"ray-x/lsp_signature.nvim",
-		event = "InsertEnter",
-		config = function()
-			require("plugins.configs.lsp_signature")
-		end,
-	},
-
-	-- auto close/rename tag
-	{
-		"windwp/nvim-ts-autotag",
-		event = "InsertEnter",
-		ft = {
-			"html",
-			"javascript",
-			"typescript",
-			"javascriptreact",
-			"typescriptreact",
-			"vue",
-			"tsx",
-			"jsx",
-			"xml",
-			"php",
-			"markdown",
-		},
-	},
-
-	-- change commentstring according to the lang
-	{
-		"JoosepAlviste/nvim-ts-context-commentstring",
-		event = "InsertEnter",
-		ft = {
-			"html",
-			"javascript",
-			"typescript",
-			"javascriptreact",
-			"typescriptreact",
-			"vue",
-			"tsx",
-			"jsx",
-			"php",
-			"css",
-			"scss",
-		},
-	},
-
-	-- highligh other uses of the word under the cursor
-	{
-		"RRethy/vim-illuminate",
-		config = function()
-			require("illuminate").configure({
-				filetypes_denylist = { "telescope", "NvimTree" },
-				modes_denylist = { "i", "v" },
-				large_file_cutoff = 3000,
-				min_count_to_highlight = 2,
-			})
-		end,
-		init = function()
-			vim.defer_fn(function()
-				require("lazy").load({ plugins = { "vim-illuminate" } })
-			end, 0)
-		end,
+		"tikhomirov/vim-glsl",
+		ft = "glsl",
 	},
 }
 

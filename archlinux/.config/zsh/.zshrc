@@ -1,8 +1,7 @@
-export ZSH="/home/ludwiklejzer/.oh-my-zsh"
-ZSH_THEME="mytheme"
+export ZSH="$ZDOTDIR/ohmyzsh"
 
+ZSH_THEME="robbyrussell"
 plugins=(git npm bgnotify z colored-man-pages yarn npm adb vi-mode asdf)
-
 COMPLETION_WAITING_DOTS="true"
 
 # more zsh completions (https://github.com/zsh-users/zsh-completions)
@@ -37,9 +36,9 @@ precmd() {
 }
 
 # pywal
-(cat ~/.cache/wal/sequences &)
+# (cat ~/.cache/wal/sequences &)
 # pywall - tty support
-source ~/.cache/wal/colors-tty.sh
+# source ~/.cache/wal/colors-tty.sh
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
@@ -49,11 +48,12 @@ export PATH=$HOME/bin:/usr/local/bin:$HOME/.local/bin:$PATH:$HOME/.local/share/g
 alias vim='nvim'
 alias vi='nvim'
 alias v='nvim'
-alias ls='exa --icons'
+alias ls='exa --icons --no-quotes'
 alias tlmgr='TEXMFDIST/scripts/texlive/tlmgr.pl --usermode'
 alias calculator='bc'
 alias calc='bc'
 alias feh='feh --scale-down --no-fehbg'
+alias wallpaper='\ls ~/Pictures/wallpapers | fzf --preview="feh --bg-scale ~/Pictures/wallpapers/{}" | xargs -I {} feh --bg-scale ~/Pictures/wallpapers/{}'
 alias ytdl='youtube-dl'
 alias myip='echo "\n\033[91mLocal IP\033[0m" && ip -br -c a && echo "\n\033[91mPublic IP\033[0m" && curl https://ip.me/'
 alias note="cd ~/Sync/wiki && vim -c ':VimwikiIndex'"
@@ -87,8 +87,11 @@ qemu_grc() {
 		-nic user,hostfwd=tcp:127.0.0.1:2222-:22
 }
 
+# zoxide
+eval "$(zoxide init zsh)"
+
 # z jump around
-[[ -r "/usr/share/z/z.sh" ]] && source /usr/share/z/z.sh
+# [[ -r "/usr/share/z/z.sh" ]] && source /usr/share/z/z.sh
 
 # ASDF
 . /opt/asdf-vm/asdf.sh

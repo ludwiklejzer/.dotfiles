@@ -1,4 +1,4 @@
-require'nvim-tree'.setup {
+local options = {
 	hijack_cursor = true,
 	sync_root_with_cwd = true,
 	reload_on_bufenter = false,
@@ -22,7 +22,7 @@ require'nvim-tree'.setup {
 			quit_on_focus_loss = true,
 			open_win_config = {
 				relative = "editor",
-				border = {"┌", "─", "┐", "│", "┘", "─", "└", "│"},
+				border = { "┌", "─", "┐", "│", "┘", "─", "└", "│" },
 				width = 30,
 				height = 30,
 				row = 1,
@@ -111,3 +111,5 @@ require'nvim-tree'.setup {
 		show_on_open_dirs = true,
 	},
 }
+
+return options

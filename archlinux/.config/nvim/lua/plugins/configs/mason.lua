@@ -1,9 +1,11 @@
-require("mason").setup({
+local options = {
 	ui = {
 		icons = {
 			server_installed = "✓",
 			server_pending = "➜",
-			server_uninstalled = "✗"
-		}
-	}
-})
+			server_uninstalled = "✗",
+		},
+	},
+}
+
+return options

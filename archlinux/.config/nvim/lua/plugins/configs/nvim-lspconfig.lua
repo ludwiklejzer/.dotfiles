@@ -63,7 +63,19 @@ end
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 
 -- Enable the following language servers with default configs
-local servers = { "pylsp", "html", "cssls", "cssmodules_ls", "clangd", "yamlls", "bashls", "jsonls", "eslint" }
+local servers = {
+	"gdscript",
+	"pyright",
+	-- "jedi_language_server",
+	-- "pylsp",
+	"html",
+	"cssls",
+	"cssmodules_ls",
+	"yamlls",
+	"bashls",
+	"jsonls",
+	"eslint",
+}
 
 for _, lsp in ipairs(servers) do
 	lspconfig[lsp].setup({
@@ -166,6 +178,16 @@ lspconfig.tsserver.setup({
 	end,
 	preferences = {
 		quotePreference = "single",
+	},
+})
+
+-- clangd lsp config
+lspconfig.clangd.setup({
+	on_attach = on_attach,
+	capabilities = capabilities,
+	cmd = {
+		"clangd",
+		"--offset-encoding=utf-16",
 	},
 })
 

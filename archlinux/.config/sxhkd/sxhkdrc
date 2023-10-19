@@ -12,7 +12,7 @@ super + @space
 
 # make sxhkd reload its configuration files:
 super + Escape
-	pkill -USR1 -x sxhkd; notify-send 'sxhkd' 'Reloaded config'
+	pkill -USR1 -x sxhkd && notify-send 'sxhkd' 'Reloaded config'
 
 # change volume
 super + shift + {plus, minus}
@@ -40,11 +40,23 @@ super + shift + p
 
 # Vimwiki
 super + shift + n
-	alacritty -e nvim -c VimwikiIndex
+	wezterm start nvim -c VimwikiIndex
 
 # bookmarks
 super + shift + b
 	xdotool type "$(cat $XDG_DATA_HOME/bookmarks | tr -s ' ' | cut -d'@' -f1 | rofi -dmenu -i | grep -f - $XDG_DATA_HOME/bookmarks | cut -d'@' -f2 | tr -d ' ')"
+
+# rofi calc
+super + shift + c
+	rofi -show calc -modi calc -no-show-match -no-sort -terse
+
+# rofi emoji
+super + shift + e
+	rofi -modi emoji -show emoji
+
+# rec audio
+super + shift + r
+	~/.config/polybar/scripts/rec_audio.sh
 
 # open browser
 super + b
@@ -56,7 +68,8 @@ super + b
 
 # quit/restart bspwm
 super + alt + {q,r}
-	bspc {quit,wm -r}
+	bspc {quit,wm -r} && notify-send 'BSPWM' 'Config reloaded'
+
 
 # close and kill
 super + {_,shift + }w

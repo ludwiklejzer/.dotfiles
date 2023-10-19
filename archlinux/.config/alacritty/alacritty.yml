@@ -30,7 +30,7 @@ key_bindings:
   - {action: IncreaseFontSize, key: Plus, mods: Control}
   - {action: DecreaseFontSize, key: Minus, mods: Control}
 window:
-  opacity: 0.9
+  opacity: 1
   padding:
-    x: 15
-    y: 15
+    x: 0
+    y: 0
