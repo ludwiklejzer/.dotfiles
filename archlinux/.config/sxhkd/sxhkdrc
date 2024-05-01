@@ -16,11 +16,11 @@ super + Escape
 
 # change volume
 super + shift + {plus, minus}
-	pactl -- set-sink-volume 0 {+,-}5% && ~/.config/dunst/scripts/volume.sh
+	pactl -- set-sink-volume 0 {+,-}5% && python ~/.config/dunst/scripts/volume.py &
 
 # change brightness
-super + ctrl + {plus, minus}
-	xbacklight {-inc, -dec} 5 && ~/.config/dunst/scripts/backlight.sh
+super + ctrl + {equal, minus}
+	xbacklight {-inc, -dec} 5 && python ~/.config/dunst/scripts/backlight.py
 
 # eject cd drive
 super + F1
@@ -28,15 +28,15 @@ super + F1
 
 # Screenshot
 Print
-	gnome-screenshot -c -f "$HOME/Images/Screenshot--$(date +"%Y-%m-%d--%H:%M:%S").png" && notify-send "Screenshot captured!" "Saved in ~/Images/"
+	flameshot screen -p "$HOME/Pictures/"
 
 # Change wallpaper ramdonly
 super + ctrl + w
-	feh --bg-scale --randomize $HOME/Images/wallpapers/ 
+	feh --bg-scale --randomize $HOME/Pictures/wallpapers/ 
 
 # Toggle polybar
 super + shift + p
-	if pidof polybar > /dev/null; then killall polybar && bspc config bottom_padding 5 && bspc config top_padding 5; else $HOME/.config/polybar/scripts/launch.sh && bspc config bottom_padding 30 && bspc config top_padding 30; fi
+	if pidof polybar > /dev/null; then killall polybar && bspc config bottom_padding 5 && bspc config top_padding 5; else $HOME/.config/polybar/scripts/launch.sh && bspc config bottom_padding 30 ; fi
 
 # Vimwiki
 super + shift + n
