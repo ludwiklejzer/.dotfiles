@@ -1,0 +1,61 @@
+[colors]
+transparent_background_colors = true
+
+[colors.primary]
+background = "0x090807"
+
+[cursor]
+blink_interval = 500
+unfocused_hollow = true
+
+[cursor.style]
+blinking = "Always"
+shape = "Beam"
+
+[font]
+size = 10
+
+[font.bold]
+family = "JetBrainsMono NF"
+style = "Bold"
+
+[font.glyph_offset]
+y = 3
+
+[font.italic]
+family = "JetBrainsMono NF"
+style = "Italic"
+
+[font.normal]
+family = "JetBrainsMono NF"
+style = "Regular"
+
+[font.offset]
+y = 0
+
+[[keyboard.bindings]]
+chars = "gcc"
+key = "Slash"
+mods = "Control"
+
+[[keyboard.bindings]]
+action = "ResetFontSize"
+key = "Key0"
+mods = "Control"
+
+[[keyboard.bindings]]
+action = "IncreaseFontSize"
+key = "Plus"
+mods = "Control"
+
+[[keyboard.bindings]]
+action = "DecreaseFontSize"
+key = "Minus"
+mods = "Control"
+
+[window]
+opacity = 1
+
+[window.padding]
+x = 10
+y = 10
