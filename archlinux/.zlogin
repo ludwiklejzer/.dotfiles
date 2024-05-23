@@ -13,6 +13,9 @@ export XDG_CACHE_HOME="$HOME/.cache"
 export QT_QPA_PLATFORMTHEME=qt6ct
 # export QT_STYLE_OVERRIDE=GTK+
 
+# SQLITE
+export SQLITE_HISTORY="$XDG_STATE_HOME/sqlite_history"
+
 # ZSH
 export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
 export HISTFILE="$XDG_CONFIG_HOME/zsh/.zsh_history"
@@ -37,14 +40,29 @@ export NODE_REPL_HISTORY="$XDG_DATA_HOME/node_repl_history"
 
 # NPM
 export prefix="$XDG_DATA_HOME/npm"
-export cache="$XDG_CACHE_HOME}/npm"
+export cache="$XDG_CACHE_HOME/npm"
 # export init-module="$XDG_CONFIG_HOME/npm/config/npm-init.js"
+#export logs-dir="$XDG_STATE_HOME/npm/logs"
+
+# PYTHON
+export PYTHON_HISTORY="$XDG_STATE_HOME/python/history"
+export PYTHONPYCACHEPREFIX="$XDG_CACHE_HOME/python"
+export PYTHONUSERBASE="$XDG_DATA_HOME/python"
+
+# MYPY
+export MYPY_CACHE_DIR="$XDG_CACHE_HOME/mypy"
 
 # LESS
 export LESSHISTFILE="$XDG_STATE_HOME/lesshst"
 
 # RANGER
 export RANGER_LOAD_DEFAULT_RC="FALSE"
+
+# W3M
+export W3M_DIR="$XDG_STATE_HOME/w3m"
+
+# POSTGRESS
+export PSQL_HISTORY="$XDG_STATE_HOME/psql_history"
 
 # MISC
 # export LANG="en_US.UTF-8"
