@@ -4,10 +4,10 @@ export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_STATE_HOME="$HOME/.local/state"
 export XDG_CACHE_HOME="$HOME/.cache"
 
-# FCITX5
-# export GTK_IM_MODULE=xim
-# export QT_IM_MODULE=ibus
-# export XMODIFIERS=@im=ibus
+# IBUS
+export GTK_IM_MODULE=ibus
+export QT_IM_MODULE=ibus
+export XMODIFIERS=@im=ibus
 
 # QT
 export QT_QPA_PLATFORMTHEME=qt6ct
@@ -66,10 +66,10 @@ export PSQL_HISTORY="$XDG_STATE_HOME/psql_history"
 
 # MISC
 # export LANG="en_US.UTF-8"
-export LANG="pt_BR.UTF-8"
+export LANG="fr_FR.UTF-8"
 export EDITOR="nvim"
 export TERMINAL="wezterm"
-export BROWSER="brave"
+export BROWSER="qutebrowser"
 export LS_COLORS=ow="36;40:"
 
 # MESA
