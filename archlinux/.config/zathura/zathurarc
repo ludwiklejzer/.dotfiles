@@ -4,7 +4,7 @@
 #
 set sandbox none
 set selection-clipboard clipboard
-set recolor true
+#set recolor true
 set adjust-open width
 set n-completion-items 10
 set statusbar-v-padding 20: 
