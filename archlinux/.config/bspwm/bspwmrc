@@ -23,4 +23,5 @@ bspc rule -a Brave-browser desktop='^1'
 bspc rule -a qBittorrent desktop='^4'
 bspc rule -a Pick-colour-picker state=floating
 bspc rule -a org.wezfurlong.wezterm state=pseudo_tiled rectangle=672x400+370+170
+bspc rule -a kitty state=pseudo_tiled rectangle=672x400+370+170
 bspc rule -a pomatez state=floating sticky=on
