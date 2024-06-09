@@ -24,6 +24,8 @@ archlinux/.config/mpd/*
 archlinux/.config/mpv/*
 !archlinux/.config/mpv/mpv.conf
 !archlinux/.config/mpv/input.conf
+!archlinux/.config/mpv/scripts
+!archlinux/.config/mpv/lua-settings
 
 # ncmpcpp
 archlinux/.config/ncmpcpp/*
