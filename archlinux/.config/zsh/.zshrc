@@ -35,11 +35,6 @@ precmd() {
 	}
 }
 
-# pywal
-# (cat ~/.cache/wal/sequences &)
-# pywall - tty support
-# source ~/.cache/wal/colors-tty.sh
-
 # export MANPATH="/usr/local/man:$MANPATH"
 
 export PATH=$HOME/bin:/usr/local/bin:$HOME/.local/bin:$PATH:$HOME/.local/share/gem/ruby/3.0.0/bin
@@ -52,14 +47,15 @@ alias ls='exa --icons --no-quotes'
 alias tlmgr='TEXMFDIST/scripts/texlive/tlmgr.pl --usermode'
 alias calculator='bc'
 alias calc='bc'
-alias feh='feh --scale-down --no-fehbg'
-alias wallpaper='\ls ~/Pictures/wallpapers | fzf --preview="feh --bg-scale ~/Pictures/wallpapers/{}" | xargs -I {} feh --bg-scale ~/Pictures/wallpapers/{}'
+alias feh='feh --scale-down'
+alias wallpaper='\ls ~/Pictures/wallpapers | fzf --no-info --no-scrollbar --preview="feh --bg-fill ~/Pictures/wallpapers/{}" | xargs -I {} feh --bg-fill ~/Pictures/wallpapers/{}'
+alias screensaver='cmatrix -M "Hello, friend" -C red -s -u 7 -k'
 alias ytdl='youtube-dl'
 alias myip='echo "\n\033[91mLocal IP\033[0m" && ip -br -c a && echo "\n\033[91mPublic IP\033[0m" && curl https://ip.me/'
-alias note="cd ~/Sync/wiki && vim -c ':VimwikiIndex'"
-alias notes="cd ~/Sync/wiki && vim -c ':Files'"
 alias wmclass="xprop | grep WM_CLASS"
+alias wmsize="xdotool selectwindow getwindowgeometry"
 alias rec_audio="ffmpeg -f pulse -i default $(date +%Y-%m-%d_%H:%M).mp3"
+alias pegasus="~/Workbench/pegasus-development/pegasus-fe --portable --disable-menu-reboot --disable-menu-shutdown --disable-menu-suspend"
 
 # Descobrir como resolver o stuttering
 alias screenrecorder="ffmpeg -f x11grab -s 1366x768 -i :0.0+0,0 -f pulse -i 0 -filter:a "volume=5.0" out.mkv"
