@@ -3,7 +3,7 @@ configuration {
 	location: 2;
 	yoffset: 45;
 	lines: 5;
-	font: "JetBrainsMono Nerd Font 9";
+	font: "CartographCF Nerd Font 10";
 	fixed-num-lines: false;
 	terminal: "rofi-sensible-terminal";
 	ssh-client: "ssh";
@@ -65,18 +65,18 @@ configuration {
 	}
 }
 
-@import "~/.cache/wal/colors-rofi-dark"
-
 window {
-	width: 450;
+	width: 500;
 	padding: 0;
 	border: 1px;
-	border-color: #292929;
-	border-radius: 0px;
+	background-color: rgba(17,17,17,0.75);
+	border-color: #333333;
+	border-radius: 10px;
+	box-shadow: 10px 10px 10px;
+	box-shadow-color: #FFFFFF;
 }
 
 inputbar {
-	background-color: rgba(255,255,255,0.03);
 	padding: 20px;
 	children: [ "prompt", "entry" ];
 }
@@ -84,6 +84,7 @@ inputbar {
 prompt {
 	margin: 0 20px 0 0;
 	background-color: transparent;
+	color: #999999;
 }
 
 textbox-prompt-colon {
@@ -93,11 +94,12 @@ textbox-prompt-colon {
 entry {
 	placeholder: "";
 	background-color: transparent;
+	text-color: #FFFFFF;
 }
 
 textbox {
 		padding: 20px;
-		font: "JetBrainsMono Nerd Font bold 11";
+		font: "CartographCF Nerd Font 11";
 }
 
 listview {
@@ -105,20 +107,34 @@ listview {
 	scrollbar: false;
 	lines: 1;
 	columns: 4;
+	border: 0px;
 }
 
 element {
 	padding: 10px 10px;
 	margin: 0;
+	background-color: #333333;
+	border-radius: 5px;
 }
 
-element selected.normal {
+element.normal.normal, element.alternate.normal {
+	background-color: transparent;
+	text-color: #aaaaaa;
+}
+
+element.selected.normal {
 	background-color: rgba(255,255,255,0.05);
-	border-radius: 100px;
+	border-radius: 5px;
+	text-color: #FFFFFF;
 }
 
 element-text {
-	text-align: center;
 	vertical-align: 0.5;
 	horizontal-align: 0.5;
+	text-transform: uppercase;
 }
+
+#textbox {
+    text-color: #FFFFFF;
+}
+
