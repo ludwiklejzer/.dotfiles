@@ -69,7 +69,7 @@
 		class = Dunst
 
 # Define the corner radius of the notification window
-		corner_radius = 5
+		corner_radius = 10
 
 # Ignore the dbus closeNotification message.
 		ignore_dbusclose = false
