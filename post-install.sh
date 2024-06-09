@@ -2,7 +2,7 @@
 
 # Arch Linux Post-Install Script
 # https://github.com/ludwiklejzer/.dotfiles/post-installer
-# by Ludwik Lejzer
+# by ludwiklejzer
 
 # Stop the script in case of some error
 set -eu
