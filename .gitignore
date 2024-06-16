@@ -47,6 +47,10 @@ archlinux/.config/vis/vis.log
 # x11
 archlinux/.config/X11/.Xauthority
 
+# qutebrowser
+archlinux/.config/qutebrowser/*
+!archlinux/.config/qutebrowser/*.py
+
 # zsh
 archlinux/.config/zsh/*
 !archlinux/.config/zsh/.zlogin
