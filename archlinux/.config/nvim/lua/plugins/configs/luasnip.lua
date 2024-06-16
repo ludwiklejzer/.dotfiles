@@ -5,4 +5,9 @@ luasnip.config.set_config({
 	updateevents = "TextChanged,TextChangedI",
 })
 
-require("luasnip.loaders.from_vscode").lazy_load()
+-- insert html snippets in js files
+luasnip.filetype_extend("html", { "javascript" })
+luasnip.filetype_extend("javascriptreact", { "html" })
+luasnip.filetype_extend("typescriptreact", { "html" })
+
+require("luasnip.loaders.from_vscode").load()

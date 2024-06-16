@@ -1,5 +1,15 @@
 local M = {}
 
+M.get_hl_fg = function(group)
+	local fg = vim.api.nvim_get_hl(0, { name = group }).fg
+	return fg
+end
+
+M.get_hl_bg = function(group)
+	local bg = vim.api.nvim_get_hl(0, { name = group }).bg
+	return bg
+end
+
 -- mapping
 M.map = function(mode, keys, command, opt)
 	local options = { noremap = true, silent = true }
@@ -18,31 +28,6 @@ M.map = function(mode, keys, command, opt)
 	vim.keymap.set(mode, keys, command, opt)
 end
 
--- auto commands
-M.augroup = function(name, clear)
-	vim.api.nvim_create_augroup(name, { clear = clear })
-end
-
-M.autocmd = function(event, group, pattern, cmd)
-	vim.api.nvim_create_autocmd(event, {
-		group = group,
-		pattern = pattern,
-		command = cmd,
-	})
-end
-
-M.setSpellLang = function(lang)
-	local clients = vim.lsp.buf_get_clients()
-
-	for i, client in ipairs(clients) do
-		if client.name == "ltex" then
-			clients[i].config.settings.ltex.language = lang
-			print("ltex: Language changed to " .. lang)
-			break
-		end
-	end
-end
-
 -- lazy loading
 M.lazy_load = function(plugin)
 	vim.schedule(function()
@@ -55,23 +40,5 @@ M.lazy_load = function(plugin)
 end
 
 -- Globals
-
-_G.OpenSsl = {
-	open = function()
-		local password = vim.fn.inputsecret("Password: ")
-		vim.fn.execute(
-			":'[,']!openssl enc -a -d -aes-256-cbc -md sha512 -pbkdf2 -salt -iter 100000 -pass pass:'"
-				.. password
-				.. "'"
-		)
-	end,
-
-	save = function()
-		local password = vim.fn.inputsecret("Password: ")
-		vim.fn.execute(
-			":'[,']!openssl enc -a -aes-256-cbc -md sha512 -pbkdf2 -salt -iter 100000 -pass pass:'" .. password .. "'"
-		)
-	end,
-}
 
 return M

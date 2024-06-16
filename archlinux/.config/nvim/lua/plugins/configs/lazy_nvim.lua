@@ -1,6 +1,13 @@
 return {
 	defaults = { lazy = true },
-	install = { colorscheme = { "wally" } },
+	install = { colorscheme = { "gruvqueen" } },
+	checker = {
+		enabled = false,
+		concurrency = 1,
+		notify = false,
+		frequency = 21600,
+		check_pinned = false,
+	},
 	ui = {
 		-- The border to use for the UI window. Accepts same border values as |nvim_open_win()|.
 		border = "none",

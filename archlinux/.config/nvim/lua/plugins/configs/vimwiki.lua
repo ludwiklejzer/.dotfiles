@@ -14,12 +14,13 @@ g.vimwiki_list = {
 		auto_generate_tags = 1,
 		auto_tags = 1,
 		auto_diary_index = 1,
+		listsyms = "az",
 	},
 }
 
 -- treat every .md or .wiki file as a wiki
 g.vimwiki_global_ext = 0
-g.vimwiki_folding = "custom"
+g.vimwiki_folding = "syntax"
 
 vim.cmd([[
 

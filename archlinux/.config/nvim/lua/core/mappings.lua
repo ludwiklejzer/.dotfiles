@@ -3,8 +3,20 @@ local utils = require("core.utils")
 local map = utils.map
 local cmd = vim.cmd
 
+map("n", "<leader>K", "<cmd>norm! K<cr>", { desc = "Keywordprg" })
+
 -- used to create personalized commands
 local user_cmd = vim.api.nvim_create_user_command
+
+-- go to the next/prev element in quickfix
+map("n", "<C-n>", ":if !empty(getqflist()) | cn | endif<CR>")
+map("n", "<C-p>", ":if !empty(getqflist()) | cp | endif<CR>")
+
+-- compiling
+map("n", "<F5>", ":silent make run <bar> copen<CR>")
+map("n", "<F4>", ":silent make <bar> copen<CR>")
+map("n", "<F3>", ":make clean<CR>")
+map("n", "<F2>", ":below 10sp term://make run<CR>i")
 
 -- Don't copy the replaced text after pasting in visual mode
 map("v", "p", "p:let @+=@0<CR>")
@@ -13,113 +25,99 @@ map("v", "p", "p:let @+=@0<CR>")
 map({ "n", "x", "o" }, "j", 'v:count || mode(1)[0:1] == "no" ? "j" : "gj"', { expr = true })
 map({ "n", "x", "o" }, "k", 'v:count || mode(1)[0:1] == "no" ? "k" : "gk"', { expr = true })
 
--- move cursor within insert mode
-map("i", "<C-h>", "<Left>", { silent = true })
-map("i", "<C-e>", "<End>", { silent = true })
-map("i", "<C-l>", "<Right>", { silent = true })
-map("i", "<C-j>", "<Down>", { silent = true })
-map("i", "<C-k>", "<Up>", { silent = true })
-map("i", "<C-a>", "<Home>", { silent = true })
-
-map("i", "<S-Tab>", "<C-d>", { silent = true })
+-- remove tab spaces
+map("i", "<S-Tab>", "<C-d>")
 
 -- add a semicolon to the end of a line
-map("i", "<A-l>", "<Esc>A;", { silent = true })
-map("n", "<A-l>", "A;<Esc>", { silent = true })
+-- map("i", "<A-l>", "<Esc>A;")
+-- map("n", "<A-l>", "A;<Esc>")
 
 -- resize window
-map("n", "<UP>", ":resize -2<CR>", { silent = true })
-map("n", "<DOWN>", ":resize +2<CR>", { silent = true })
-map("n", "<LEFT>", ":vertical resize +2<CR>", { silent = true })
-map("n", "<RIGHT>", ":vertical resize -2<CR>", { silent = true })
+map("n", "<UP>", ":resize -2<CR>")
+map("n", "<DOWN>", ":resize +2<CR>")
+map("n", "<LEFT>", ":vertical resize +2<CR>")
+map("n", "<RIGHT>", ":vertical resize -2<CR>")
 
 -- spelling
-map("n", "<F8>", ':lua require("core.utils").setSpellLang("pt-BR")<CR>')
-map("n", "<F7>", ':lua require("core.utils").setSpellLang("en-US")<CR>')
 map("n", "z=", ":Telescope spell_suggest<CR>")
 map("n", "^[", ":Telescope")
 
 -- move lines
-map("n", "<A-j>", ":m . +1<CR>==", { silent = true })
-map("n", "<A-k>", ":m . -2<CR>==", { silent = true })
-map("i", "<A-j>", "<Esc>:m . +1<CR>==gi", { silent = true })
-map("i", "<A-k>", "<Esc>:m . -2<CR>==gi", { silent = true })
-map("v", "<A-j>", ":m '>+1<CR>gv=gv", { silent = true })
-map("v", "<A-k>", ":m '<-2<CR>gv=gv", { silent = true })
+map("n", "<A-j>", ":m . +1<CR>==")
+map("n", "<A-k>", ":m . -2<CR>==")
+map("i", "<A-j>", "<Esc>:m . +1<CR>==gi")
+map("i", "<A-k>", "<Esc>:m . -2<CR>==gi")
+map("v", "<A-j>", ":m '>+1<CR>gv=gv")
+map("v", "<A-k>", ":m '<-2<CR>gv=gv")
+
+-- indent without deselecting in visual mode
+map("v", "<", "<gv")
+map("v", ">", ">gv")
+
+-- terminal
+map(
+	{ "n", "t" },
+	"<C-'>",
+	"<cmd>lua if vim.bo.buftype == 'terminal' then vim.cmd(':q!') else vim.cmd(':belowright 10sp term://zsh') end<CR>",
+	{ desc = "open terminal" }
+) --
+map("t", "<ESC><ESC>", "<C-\\><C-n>", { desc = "Go to normal mode on terminal" }) --
+map("t", "<C-w>k", "<cmd>wincmd k<cr>", { desc = "Go to Upper Window" })
+map("t", "<C-w>l", "<cmd>wincmd l<cr>", { desc = "Go to Right Window" })
+map("t", "<C-w>j", "<cmd>wincmd j<cr>", { desc = "Go to Lower Window" })
+map("t", "<C-w>h", "<cmd>wincmd h<cr>", { desc = "Go to Left Window" })
 
 -- misc
-
-map("t", "q", "<C-\\><C-n>:q!<CR>", { silent = true }) -- close terminal window
-map("t", "X", "<C-\\><C-n>:bd!<CR>", { silent = true }) -- close terminal buffer
-map("t", "<ESC><ESC>", "<C-\\><C-n>", { silent = true }) -- Go to normal mode on terminal
-map({ "n", "i" }, "<C-s>", "<cmd> :w <CR>") -- save buffer
-map("n", '"', ":below 10sp term://zsh<CR>") -- open terminal
-map("n", "q", ":quit<CR>", { silent = true }) -- quit window
-map("n", "<S-q>", ":quitall!<CR>", { silent = true }) -- quit all windows without save
-map("n", "<S-x>", ":bd<CR>", { silent = true }) -- unload buffer
-map("n", "<C-j>", ":bn<CR>", { silent = true }) -- next buffer
-map("n", "<C-k>", ":bp<CR>", { silent = true }) -- prev buffer
-map("n", "<Esc>", "<cmd> :noh <CR>", { silent = true }) -- hide search highlighting
-map("n", "<C-q>", "q", { silent = true }) -- record macro
+map("n", "<Leader>cc", ":Telescope colorscheme<CR>") -- toggle wrap
+map("n", "<Leader>sw", ":set wrap!<CR>") -- toggle wrap
+map({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save Buffer" })
+map("n", "q", ":quit<CR>") -- quit window
+map("n", "<S-q>", ":quitall!<CR>") -- quit all windows without save
+map("n", "<S-x>", ":bp<bar>sp<bar>bn<bar>bd<CR>") -- unload buffer without closing window
+map("n", "<C-j>", ":bn<CR>") -- next buffer
+map("n", "<C-k>", ":bp<CR>") -- prev buffer
+map("n", "<Esc>", "<cmd> :noh <CR>") -- hide search highlighting
+map("n", "<C-q>", "q") -- record macro
 
 -------------
 -- PLUGINS --
 -------------
 
 -- hop
-map("n", "<Leader>h", ":HopChar1<CR>", { silent = true })
+map("n", "<Leader>h", ":HopChar1<CR>")
 
--- truezen
-map("n", "<F9>", ":TZAtaraxis<CR>", { silent = true })
-
--- vimwiki
-map("n", "<Leader>ww", ":VimwikiIndex<CR>", { silent = true })
-
--- nvim comment
--- map("n", "gcc", ":CommentToggle<CR>", { silent = true })
--- map("v", "gc", ":CommentToggle<CR>", { silent = true })
+-- Neorg
+map("n", "<Leader>ww", ":Neorg index<CR>")
 
 -- telescope
-map("n", "<Leader>fb", ":Telescope file_browser path=%:p:h select_buffer=true<CR>", { silent = true })
-map("n", "<Leader>ff", ":Telescope find_files<CR>", { silent = true })
+map("n", "<Leader>ff", ":Telescope find_files hidden=true preview_title= prompt_title=<CR>")
 map(
 	"n",
 	"<Leader>f<Leader>f",
-	':lua vim.fn.execute("Telescope find_files cwd=" .. vim.fn.expand("%:h"))<CR>',
-	{ silent = true }
+	[[:lua require'telescope.builtin'.find_files({ cwd = vim.fn.expand("%:p:h"), preview_title="", prompt_title="" })<CR>]]
 )
-map("n", "<Leader>fc", ":Telescope find_files cwd=~/.config/nvim<CR>", { silent = true })
+map("n", "<Leader>fc", ":Telescope find_files cwd=$HOME/.config/nvim/lua preview_title= prompt_title=<CR>")
 map(
 	"n",
 	"<Leader>fp",
-	":lua require('telescope.builtin').find_files{cwd=require('telescope.utils').buffer_dir()}<CR>",
-	{ silent = true }
+	":lua require('telescope.builtin').find_files{cwd=require('telescope.utils').buffer_dir(),  preview_title='', prompt_title=''}<CR>"
 )
-map("n", "<Leader>fg", ":Telescope live_grep<CR>", { silent = true })
-map(
-	"n",
-	"<Leader>f<Leader>g",
-	':lua vim.fn.execute("Telescope live_grep cwd=" .. vim.fn.expand("%:h"))<CR>',
-	{ silent = true }
-)
-map("n", "<Leader>cm", ":Telescope git_commits<CR>", { silent = true })
-map("n", "<Leader>gst", ":Telescope git_status<CR>", { silent = true })
-map("n", "<Leader>fh", ":Telescope help_tags<CR>", { silent = true })
-map("n", "<Leader>fo", ":Telescope oldfiles<CR>", { silent = true })
-map("n", "<Leader>th", ":Telescope themes<CR>", { silent = true })
-map("n", "<leader>fa", "<cmd> :Telescope find_files follow=true no_ignore=true hidden=true <CR>", { silent = true })
-
--- nvim tree
-map("n", "<C-b>", ":NvimTreeToggle<CR>", { silent = true })
-map("n", "<C-A-b>", ":NvimTreeFindFile<CR>", { silent = true })
+map("n", "<Leader>fg", ":Telescope live_grep preview_title= prompt_title=<CR>")
+map("n", "<Leader>f<Leader>g", ':lua vim.fn.execute("Telescope live_grep cwd=" .. vim.fn.expand("%:h"))<CR>')
+map("n", "<Leader>cm", ":Telescope git_commits<CR>")
+map("n", "<Leader>gst", ":Telescope git_status<CR>")
+map("n", "<Leader>fh", ":Telescope help_tags<CR>")
+map("n", "<Leader>fo", ":Telescope oldfiles<CR>")
+map("n", "<Leader>th", ":Telescope themes<CR>")
+map("n", "<leader>fa", "<cmd> :Telescope find_files follow=true no_ignore=true hidden=true <CR>")
 
 -- lsp
-map("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>")
-map("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>")
+map("n", "<Leader>gD", "<cmd>lua vim.lsp.buf.declaration()<CR>")
+map("n", "<Leader>gd", "<cmd>lua vim.lsp.buf.definition()<CR>")
 map("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>")
-map("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>")
-map("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>")
-map("n", "<space>c", "<cmd>lua vim.lsp.buf.signature_help()<CR>")
+map("n", "<Leader>gr", "<cmd>lua vim.lsp.buf.references()<CR>")
+map("n", "<Leader>gi", "<cmd>lua vim.lsp.buf.implementation()<CR>")
+map("n", "<Leader>c", "<cmd>lua vim.lsp.buf.signature_help()<CR>")
 map("n", "<space>wa", "<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>")
 map("n", "<space>wr", "<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>")
 map("n", "<space>wl", "<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>")
@@ -130,8 +128,18 @@ map("n", "<space>f", "<cmd>lua vim.lsp.buf.format()<CR>")
 map("n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<CR>")
 map("n", "]d", "<cmd>lua vim.diagnostic.goto_next()<CR>")
 map("n", "<space>q", "<cmd>lua vim.diagnostic.setloclist()<CR>")
+map(
+	"n",
+	"<space>ih",
+	"<cmd>lua vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled())<CR>:hi LspInlayHint guibg=#333333<CR>"
+)
 
 -- nvim-dap
-map("n", "<leader>dt", ':lua require("dapui").toggle() <CR>')
-map("n", "<leader>db", ":DapToggleBreakpoint <CR>")
-map("n", "<leader>dc", ":DapContinue <CR>")
+map("n", "<leader>du", ':lua require("dapui").toggle()<CR>')
+map("n", "<leader>db", ":DapToggleBreakpoint<CR>")
+map("n", "<leader>dc", ":DapContinue<CR>")
+map("n", "<leader>dt", ":DapTerminate<CR>")
+map("n", "<leader>dr", ":lua require('dapui').open({reset = true})<CR>")
+map("n", "<F9>", ":DapStepOver<CR>")
+map("n", "<F10>", ":DapStepInto<CR>")
+map("n", "<F11>", ":DapStepOut<CR>")

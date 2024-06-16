@@ -1,53 +1,17 @@
-local retrolight = {
+local utils = require("core.utils")
+local get_hl_fg = utils.get_hl_fg
+
+local my_theme = {
 	normal = {
-		a = { bg = "#222222", fg = "#DCDAD5" },
-		b = { bg = "#222222", fg = "#DCDAD5" },
-		c = { bg = "#222222", fg = "#DCDAD5" },
-		x = { bg = "#222222", fg = "#DCDAD5" },
-		y = { bg = "#222222", fg = "#DCDAD5" },
-		z = { bg = "#222222", fg = "#DCDAD5" },
+		a = { bg = "NONE", fg = "#888888" },
+		b = { bg = "NONE", fg = "#888888" },
+		c = { bg = "NONE", fg = "#888888" },
+		x = { bg = "NONE", fg = "#888888" },
+		y = { bg = "NONE", fg = "#EEEEEE" },
+		z = { bg = "NONE", fg = "#888888" },
 	},
-	-- insert = {
-	-- 	a = { bg = "#222222", fg = "#DCDAD5" },
-	-- 	b = { bg = "#222222", fg = "#DCDAD5" },
-	-- 	c = { bg = "#222222", fg = "#DCDAD5" },
-	-- 	x = { bg = "#222222", fg = "#DCDAD5" },
-	-- 	y = { bg = "#222222", fg = "#DCDAD5" },
-	-- 	z = { bg = "#222222", fg = "#DCDAD5" },
-	-- },
-	-- visual = {
-	-- 	a = { bg = "#222222", fg = "#DCDAD5" },
-	-- 	b = { bg = "#222222", fg = "#DCDAD5" },
-	-- 	c = { bg = "#222222", fg = "#DCDAD5" },
-	-- 	x = { bg = "#222222", fg = "#DCDAD5" },
-	-- 	y = { bg = "#222222", fg = "#DCDAD5" },
-	-- 	z = { bg = "#222222", fg = "#DCDAD5" },
-	-- },
-	-- replace = {
-	-- 	a = { bg = "#222222", fg = "#DCDAD5" },
-	-- 	b = { bg = "#222222", fg = "#DCDAD5" },
-	-- 	c = { bg = "#222222", fg = "#DCDAD5" },
-	-- 	x = { bg = "#222222", fg = "#DCDAD5" },
-	-- 	y = { bg = "#222222", fg = "#DCDAD5" },
-	-- 	z = { bg = "#222222", fg = "#DCDAD5" },
-	-- },
-	-- command = {
-	-- 	a = { bg = "#222222", fg = "#DCDAD5" },
-	-- 	b = { bg = "#222222", fg = "#DCDAD5" },
-	-- 	c = { bg = "#222222", fg = "#DCDAD5" },
-	-- 	x = { bg = "#222222", fg = "#DCDAD5" },
-	-- 	y = { bg = "#222222", fg = "#DCDAD5" },
-	-- 	z = { bg = "#222222", fg = "#DCDAD5" },
-	-- },
-	-- inactive = {
-	-- 	a = { bg = "#222222", fg = "#DCDAD5" },
-	-- 	b = { bg = "#222222", fg = "#DCDAD5" },
-	-- 	c = { bg = "#222222", fg = "#DCDAD5" },
-	-- 	x = { bg = "#222222", fg = "#DCDAD5" },
-	-- 	y = { bg = "#222222", fg = "#DCDAD5" },
-	-- 	z = { bg = "#222222", fg = "#DCDAD5" },
-	-- },
 }
+
 local function lsp_clients()
 	local active_clients = vim.lsp.get_active_clients()
 	if not active_clients or #active_clients == 0 then
@@ -67,19 +31,19 @@ local mode = {
 	separator = { left = "", right = "" },
 	fmt = function(str)
 		if str == "NORMAL" then
-			return " " .. str
+			return ""
 		elseif str == "INSERT" then
-			return " " .. str
+			return "󰣕"
 		elseif str == "VISUAL" then
-			return "󰕢 " .. str
+			return "󰕢"
 		elseif str == "V-LINE" then
-			return "󰒉 " .. str
+			return "󰘤"
 		elseif str == "V-BLOCK" then
-			return "󰩭 " .. str
+			return "󰩭"
 		elseif str == "REPLACE" then
-			return "󰛔 " .. str
+			return "󰛔"
 		elseif str == "COMMAND" then
-			return " " .. str
+			return ""
 		end
 	end,
 }
@@ -104,6 +68,7 @@ local diagnostics = {
 
 local filesize = {
 	"filesize",
+	icon = "",
 }
 
 local filetype = {
@@ -114,6 +79,13 @@ local filetype = {
 
 local fileformat = {
 	"fileformat",
+	cond = function()
+		if vim.api.nvim_get_option("fileformat") == "dos" then
+			return true
+		elseif vim.api.nvim_get_option("fileformat") == "mac" then
+			return true
+		end
+	end,
 	symbols = {
 		unix = " Unix", -- e712
 		dos = "󰨡 DOS", -- e70f
@@ -133,6 +105,16 @@ local macro = {
 	end,
 }
 
+local line_sep = {
+	"line_sep",
+	fmt = function()
+		local width = vim.api.nvim_win_get_width(0)
+
+		return string.rep("─", width - 2)
+	end,
+	color = { bg = "NONE", fg = "#333333" },
+}
+
 local progress = {
 	"progress",
 	icon = "",
@@ -141,7 +123,16 @@ local progress = {
 
 local searchcount = {
 	"searchcount",
-	icon = "",
+	icon = "",
+}
+
+local lazy_updates = {
+	"lazy_updates",
+	fmt = function()
+		return "󱧕"
+	end,
+	cond = require("lazy.status").has_updates,
+	color = { fg = "#ff9e64" },
 }
 
 local selection_count = {
@@ -160,56 +151,6 @@ local selection_count = {
 
 		return lines .. "L " .. chars .. "C"
 	end,
-}
-
-local navic = {
-	"navic",
-	-- Can be nil, "static" or "dynamic". This option is useful only when you have highlights enabled.
-	-- Many colorschemes don't define same backgroud for nvim-navic as their lualine statusline backgroud.
-	-- Setting it to "static" will perform a adjustment once when the component is being setup. This should
-	--   be enough when the lualine section isn't changing colors based on the mode.
-	-- Setting it to "dynamic" will keep updating the highlights according to the current modes colors for
-	--   the current section.
-	-- color_correction = nil,
-	color_correction = "static",
-
-	navic_opts = {
-		icons = {
-			File = "󰈙 ",
-			Module = " ",
-			Namespace = "󰌗 ",
-			Package = " ",
-			Class = "󰌗 ",
-			Method = "󰆧 ",
-			Property = " ",
-			Field = " ",
-			Constructor = " ",
-			Enum = "󰕘",
-			Interface = "󰕘",
-			Function = "󰊕 ",
-			Variable = "󰆧 ",
-			Constant = "󰏿 ",
-			String = "󰀬 ",
-			Number = "󰎠 ",
-			Boolean = "◩ ",
-			Array = "󰅪 ",
-			Object = "󰅩 ",
-			Key = "󰌋 ",
-			Null = "󰟢 ",
-			EnumMember = " ",
-			Struct = "󰌗 ",
-			Event = " ",
-			Operator = "󰆕 ",
-			TypeParameter = "󰊄 ",
-		},
-		highlight = false,
-		separator = " > ",
-		depth_limit = 0,
-		depth_limit_indicator = "..",
-		safe_output = true,
-		lazy_update_context = false,
-		click = false,
-	},
 }
 
 local buffers = {
@@ -235,18 +176,36 @@ local buffers = {
 	},
 
 	buffers_color = {
-		inactive = { bg = "#DCDAD5", fg = "#AAAAAA" },
-		active = { bg = "#DCDAD5", fg = "#222222" },
+		inactive = { bg = "NONE", fg = "#444444" },
+		active = { bg = "NONE", fg = "#AAAAAA", gui = "bold" },
 	},
 }
 
 require("lualine").setup({
 	options = {
 		fmt = string.upper,
-		theme = retrolight,
-		component_separators = { left = "/", right = "/" },
+		theme = my_theme,
+		component_separators = { left = "", right = "" },
 		section_separators = { left = "", right = "" },
-		disabled_filetypes = { statusline = {}, winbar = {} },
+		disabled_filetypes = {
+			statusline = { "alpha", "NvimTree", "TelescopePrompt", "lazy", "mason", "help" },
+			winbar = {
+				"alpha",
+				"NvimTree",
+				"TelescopePrompt",
+				"lazy",
+				"mason",
+				"qf",
+				"help",
+				"term",
+				"dap-repl",
+				-- "dapui_scopes",
+				"dapui_breakpoints",
+				"dapui_stacks",
+				"dapui_watches",
+				"dapui_console",
+			},
+		},
 		ignore_focus = {},
 		always_divide_middle = true,
 		globalstatus = true,
@@ -257,40 +216,23 @@ require("lualine").setup({
 		},
 	},
 	sections = {
-		lualine_a = { navic },
+		lualine_a = { lazy_updates },
 		lualine_b = {},
 		lualine_c = {},
-		lualine_x = {},
-		lualine_y = {},
-		lualine_z = {},
-	},
-	inactive_sections = {
-		lualine_a = {},
-		lualine_b = {},
-		lualine_c = {},
-		lualine_x = {},
-		lualine_y = {},
-		lualine_z = {},
+		lualine_x = { "%s", macro, selection_count, searchcount },
+		lualine_y = { diagnostics },
+		lualine_z = { branch, fileformat, mode },
 	},
 	tabline = {
-		lualine_a = { mode },
-		lualine_b = { branch },
-		lualine_c = { diff, macro },
-		-- lualine_x = { diagnostics, lsp_clients },
-		lualine_x = { diagnostics },
-		lualine_y = { filesize, filetype, fileformat, selection_count, searchcount },
-		lualine_z = { progress },
+		lualine_a = { buffers },
+		lualine_z = {},
 	},
 	winbar = {
-		lualine_a = { buffers },
+		lualine_a = { line_sep },
 	},
+	inactive_sections = {},
 	inactive_winbar = {
-		lualine_a = {},
-		lualine_b = {},
-		lualine_c = {},
-		lualine_x = {},
-		lualine_y = {},
-		lualine_z = {},
+		lualine_a = { line_sep },
 	},
 	extensions = {},
 })

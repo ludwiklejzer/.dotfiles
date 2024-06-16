@@ -5,6 +5,7 @@ local options = {
 			server_pending = "➜",
 			server_uninstalled = "✗",
 		},
+		border = "single",
 	},
 }
 

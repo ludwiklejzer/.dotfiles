@@ -1,6 +1,7 @@
 local cmp = require("cmp")
 local luasnip = require("luasnip")
 local context = require("cmp.config.context")
+local copilot = require("copilot.suggestion")
 
 local function border(hl_name)
 	return {
@@ -22,25 +23,37 @@ function cmp_window:has_scrollbar()
 end
 
 cmp.setup({
+	preselect = cmp.PreselectMode.Item,
 	experimental = {
 		ghost_text = true,
 	},
 	enabled = function()
 		-- disable completion in comments and prompt buftype
 		-- keep command mode completion enabled when cursor is in a comment
-		local buftype = vim.api.nvim_buf_get_option(0, "buftype")
+		local buftype = vim.bo.filetype
 
 		if vim.api.nvim_get_mode().mode == "c" then
 			return true
 		elseif buftype == "prompt" then
 			return false
+		elseif context.in_treesitter_capture("comment") or context.in_syntax_group("Comment") then
+			return false
 		else
-			return not context.in_treesitter_capture("comment") and not context.in_syntax_group("Comment")
+			return true
 		end
 	end,
+	view = {
+		entries = {
+			follow_cursor = true,
+		},
+	},
 	window = {
 		completion = {
 			border = border("CmpBorder"),
+			col_offset = 0,
+			side_padding = 1,
+			scrollbar = false,
+			completeopt = "menu,menuone,noinsert,preview",
 		},
 		documentation = {
 			border = border("CmpDocBorder"),
@@ -52,15 +65,16 @@ cmp.setup({
 		end,
 	},
 	formatting = {
-		format = function(_, vim_item)
+		expandable_indicator = true,
+		fields = { "kind", "abbr", "menu" },
+		format = function(entry, vim_item)
 			local icons = {
 				Text = "",
 				Method = "",
 				Function = "󰊕",
-				Constructor = "",
+				Constructor = "",
 				Field = "ﰠ",
-				Variable = "󰫧",
-				Class = "ﴯ",
+				Variable = "󰀫 ",
 				Interface = "",
 				Module = "",
 				Property = "ﰠ",
@@ -71,46 +85,80 @@ cmp.setup({
 				Snippet = "",
 				Color = "",
 				File = "",
-				Reference = "",
 				Folder = "",
 				EnumMember = "",
 				Constant = "",
 				Struct = "פּ",
 				Event = "",
-				Operator = "",
 				TypeParameter = "",
+				Array = " ",
+				Boolean = "󰨙 ",
+				Class = " ",
+				Control = " ",
+				Collapsed = " ",
+				Key = " ",
+				Namespace = "󰦮 ",
+				Null = " ",
+				Number = "󰎠 ",
+				Object = " ",
+				Operator = " ",
+				Package = " ",
+				Reference = " ",
+				String = " ",
+				Copilot = "",
+				Codeium = "",
+				Calc = "󰃬",
+				Spell = "󰓆",
 			}
 			vim_item.menu = ({
 				buffer = "[Buffer]",
 				nvim_lsp = "[LSP]",
 				luasnip = "[LuaSnip]",
-				nvim_lua = "[Lua]",
 				path = "[Path]",
 				spell = "[Spell]",
 				calc = "[Calc]",
 				emoji = "[Emoji]",
 				npm = "[NPM]",
-			})[_.source.name]
+				orgmode = "[Orgmode]",
+				neorg = "[Neorg]",
+			})[entry.source.name]
 
-			if _.source.name == "calc" then
-				vim_item.kind = "󰃬 Calc"
-			elseif _.source.name == "emoji" then
-				vim_item.kind = "󰞅 Emoji"
-			elseif _.source.name == "spell" then
-				vim_item.kind = "󰓆 Spell"
-			elseif _.source.name == "buffer" then
-				vim_item.kind = "󰌨 Buffer"
-			elseif _.source.name == "codeium" then
-				vim_item.kind = " Codeium"
+			if entry.source.name == "calc" then
+				vim_item.kind = "󰃬"
+			elseif entry.source.name == "spell" then
+				vim_item.kind = "󰓆"
+			elseif entry.source.name == "buffer" then
+				vim_item.kind = "󰌨"
+			elseif entry.source.name == "orgmode" then
+				vim_item.kind = ""
 			else
-				vim_item.kind = string.format("%s %s", icons[vim_item.kind], vim_item.kind)
+				vim_item.kind = icons[vim_item.kind]
 			end
 
 			vim_item.dup = { buffer = 1, path = 1, nvim_lsp = 0 }
+
 			return vim_item
 		end,
 	},
 	mapping = {
+		["<A-e>"] = cmp.mapping(function(fallback)
+			copilot.dismiss()
+		end, { "i", "s" }),
+		["<M-j>"] = cmp.mapping(function(fallback)
+			cmp.abort()
+			copilot.next()
+		end, { "i", "s" }),
+		["<M-k>"] = cmp.mapping(function(fallback)
+			cmp.abort()
+			copilot.prev()
+		end, { "i", "s" }),
+		["<M-w>"] = cmp.mapping(function(fallback)
+			copilot.accept_word()
+		end, { "i", "s" }),
+		["<M-l>"] = cmp.mapping(function(fallback)
+			copilot.accept_line()
+		end, { "i", "s" }),
+
 		["<C-p>"] = cmp.mapping(function(fallback)
 			if cmp.visible() then
 				cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
@@ -133,14 +181,34 @@ cmp.setup({
 		["<C-f>"] = cmp.mapping.scroll_docs(4),
 		["<C-Space>"] = cmp.mapping.complete(),
 		["<C-e>"] = cmp.mapping.close(),
-		["<CR>"] = cmp.mapping.confirm({
+		["<C-y>"] = cmp.mapping.confirm({
 			behavior = cmp.ConfirmBehavior.Insert,
 			select = true,
 		}),
-		["<Tab>"] = cmp.mapping.confirm({
-			behavior = cmp.ConfirmBehavior.Insert,
-			select = true,
-		}),
+		["<CR>"] = cmp.mapping(function(fallback)
+			if copilot.is_visible() then
+				copilot.accept()
+			elseif cmp.visible() then
+				cmp.confirm({
+					behavior = cmp.ConfirmBehavior.Insert,
+					select = true,
+				})
+			else
+				fallback()
+			end
+		end, { "i", "s" }),
+		["<Tab>"] = cmp.mapping(function(fallback)
+			if copilot.is_visible() then
+				copilot.accept()
+			elseif cmp.visible() then
+				cmp.confirm({
+					behavior = cmp.ConfirmBehavior.Insert,
+					select = true,
+				})
+			else
+				fallback()
+			end
+		end, { "i", "s" }),
 	},
 	sources = {
 		{
@@ -151,19 +219,28 @@ cmp.setup({
 				return not context.in_treesitter_capture("string") and not context.in_syntax_group("String")
 			end,
 		},
-		{ name = "codeium" },
+		{ name = "orgmode" },
+		{ name = "neorg" },
+		-- { name = "codeium" },
+		-- { name = "copilot" },
 		{ name = "nvim_lsp" },
-		{ name = "nvim_lua" },
 		{ name = "path" },
 		{ name = "spell" },
 		{ name = "calc" },
-		{ name = "nvim_lsp_signature_help" },
 		{ name = "buffer" },
 		{ name = "emoji" },
 	},
 })
 
 -- buffer-specific configs
-cmp.setup.filetype({ "TelescopePrompt", "aes" }, {
+cmp.setup.filetype({ "TelescopePrompt" }, {
 	sources = {},
+})
+
+cmp.setup.filetype({ "dap-repl", "dapui_watches", "dapui_hover" }, {
+	sources = {
+		{ name = "dap" },
+		{ name = "calc" },
+		{ name = "path" },
+	},
 })

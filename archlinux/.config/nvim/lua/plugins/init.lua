@@ -8,7 +8,7 @@ if not vim.loop.fs_stat(lazypath) then
 		"clone",
 		"--filter=blob:none",
 		"https://github.com/folke/lazy.nvim.git",
-		"--branch=stable", -- latest stable release
+		"--branch=stable",
 		lazypath,
 	})
 end
@@ -16,30 +16,13 @@ vim.opt.rtp:prepend(lazypath)
 
 local plugins = {
 
-	-- FIND IF IT REALLY WORKS
-	-- open large files fast
-	{
-		"vim-scripts/LargeFile",
-		init = function() end, -- necessary because plugin does not have a setup function
-		cond = function()
-			local filepath = vim.fn.expand("%")
-			local filesize = vim.fn.getfsize(filepath) / (1024 * 1024)
-			local max_filesize = 5 -- megabytes
-
-			if filesize > max_filesize then
-				vim.g.LargeFile = max_filesize -- plugin minimum file size to run
-				return true
-			end
-		end,
-	},
-
 	-- lua library
-	"nvim-lua/plenary.nvim",
+	{ "nvim-lua/plenary.nvim" },
 
 	-- manage LSP servers, DAP servers, linters, and formatters
 	{
 		"williamboman/mason.nvim",
-		event = "VeryLazy",
+		lazy = false,
 		cmd = { "Mason", "MasonInstall", "MasonLog", "MasonInstallAll", "MasonUpdate" },
 		opts = function()
 			require("plugins.configs.mason")
@@ -49,12 +32,8 @@ local plugins = {
 	-- integration between lspconfig and mason
 	{
 		"williamboman/mason-lspconfig.nvim",
-		init = function()
-			vim.schedule(function()
-				require("lazy").load({ plugins = "mason-lspconfig.nvim" })
-				vim.cmd("silent! do FileType")
-			end, 0)
-		end,
+		lazy = false,
+		dependencies = { "mason.nvim" },
 		opts = function()
 			require("plugins.configs.mason-lspconfig")
 		end,
@@ -62,8 +41,9 @@ local plugins = {
 
 	-- inject LSP diagnostics, code actions, and more
 	{
-		"jose-elias-alvarez/null-ls.nvim",
-		event = "VeryLazy",
+		"nvimtools/none-ls.nvim",
+		event = "InsertEnter",
+		keys = { "K", " ca", "gi" },
 		config = function()
 			require("plugins.configs.null-ls")
 		end,
@@ -71,13 +51,28 @@ local plugins = {
 
 	-- integration between mason and null-ls
 	{
-		"jayp0521/mason-null-ls.nvim",
-		cmd = "NullLsInstall",
+		"jay-babu/mason-null-ls.nvim",
 		build = ":NullLsInstall",
+		cmd = "NullLsInstall",
+		event = { "BufReadPre", "BufNewFile" },
+		dependencies = {
+			"williamboman/mason.nvim",
+			"nvimtools/none-ls.nvim",
+		},
 		opts = { automatic_installation = true },
 	},
 
-	-- EDIT CONFIG FILE
+	-- nvim lua docs, signature and completion
+	{
+		"folke/neodev.nvim",
+		event = "VeryLazy",
+		config = function()
+			require("neodev").setup({
+				library = { plugins = { "nvim-dap-ui" }, types = true },
+			})
+		end,
+	},
+
 	-- language server protocol
 	{
 		"neovim/nvim-lspconfig",
@@ -96,13 +91,27 @@ local plugins = {
 		end,
 	},
 
-	-- show code context
+	{ "nvim-treesitter/nvim-treesitter-textobjects" },
+
+	-- Debugging
 	{
-		"nvim-treesitter/nvim-treesitter-context",
-		event = "VeryLazy",
-		opts = function()
-			require("plugins.configs.nvim-treesitter-context")
+		"mfussenegger/nvim-dap",
+		-- lazy = false,
+		cmd = { "DapToggleBreakpoint", "DapContinue" },
+		config = function()
+			require("plugins.configs.nvim-dap")
 		end,
+		dependencies = {
+			"rcarriga/nvim-dap-ui", -- Debugger UI
+			"nvim-neotest/nvim-nio", -- Async IO library
+			"jay-babu/mason-nvim-dap.nvim",
+			{
+				"LiadOz/nvim-dap-repl-highlights",
+				config = function()
+					require("nvim-dap-repl-highlights").setup()
+				end,
+			},
+		},
 	},
 
 	-- completion engine
@@ -112,24 +121,63 @@ local plugins = {
 		dependencies = {
 			-- cmp sources
 			"saadparwaiz1/cmp_luasnip", -- luasnip completion
-			"hrsh7th/cmp-nvim-lua", -- neovim Lua API
 			"hrsh7th/cmp-nvim-lsp", -- neovim builtin LSP client
 			"hrsh7th/cmp-buffer", -- buffer words
 			"hrsh7th/cmp-path", -- complete paths
 			"f3fora/cmp-spell", -- spell checking
 			"hrsh7th/cmp-calc", -- math calculation
 			"hrsh7th/cmp-emoji",
+			"rcarriga/cmp-dap",
 
-			-- ai completion
 			{
-				"Exafunction/codeium.nvim",
+				"zbirenbaum/copilot-cmp",
+				build = ":Copilot auth",
 				config = function()
-					require("codeium").setup({})
+					require("copilot_cmp").setup()
 				end,
 			},
+
+			-- ai completion
+			-- {
+			-- 	"Exafunction/codeium.nvim",
+			-- 	build = ":Codeium Auth",
+			-- 	opts = {
+			-- 		enable_chat = true,
+			-- 		language_server = "/home/ludwiklejzer/Downloads/language_server_linux_x64",
+			-- 	},
+			-- },
 		},
+
 		config = function()
 			require("plugins.configs.cmp")
+		end,
+	},
+
+	{
+		"zbirenbaum/copilot.lua",
+		cmd = "Copilot",
+		event = "InsertEnter",
+		config = function()
+			require("copilot").setup({
+				suggestion = {
+					enabled = true,
+					auto_trigger = false,
+				},
+				panel = {
+					enabled = true,
+					auto_refresh = false,
+					keymap = {
+						jump_prev = "[[",
+						jump_next = "]]",
+						accept = "<CR>",
+						refresh = "gr",
+						open = "<M-CR>",
+					},
+				},
+				filetypes = {
+					markdown = true,
+				},
+			})
 		end,
 	},
 
@@ -169,48 +217,67 @@ local plugins = {
 		event = "VeryLazy",
 	},
 
-	-- REVIEW CODE
-	-- statusline
+	-- colorscheme
 	{
-		"nvim-lualine/lualine.nvim",
+		"Murtaza-Udaipurwala/gruvqueen",
 		priority = 1000,
 		lazy = false,
 		config = function()
-			require("plugins.configs.lualine")
-		end,
-		-- needs to be loaded as a dependency so it does not overwrite lualine theme
-		dependencies = {
-			{
-				"projekt0n/github-nvim-theme",
-				opts = {
-					options = {
-						transparent = true,
-						module_default = false,
-						darken = {
-							floats = false,
-							sidebars = { enable = false },
-						},
-						styles = {
-							comments = "italic",
-							keywords = "italic",
-						},
-						modules = {
-							gitsigns = false,
-						},
-					},
+			require("gruvqueen").setup({
+				config = {
+					disable_bold = false,
+					italic_comments = true,
+					italic_keywords = false,
+					italic_functions = false,
+					italic_variables = false,
+					invert_selection = false,
+					style = "material", -- 'original', 'mix', 'material'
+					transparent_background = true,
 				},
-				config = function()
-					vim.cmd("colorscheme github_light_high_contrast")
-				end,
-			},
-		},
+			})
+
+			local set_hl = vim.api.nvim_set_hl
+
+			set_hl(0, "IlluminatedWordText", { bg = "#333333" })
+			set_hl(0, "IlluminatedWordRead", { bg = "#333333" })
+			set_hl(0, "IlluminatedWordWrite", { bg = "#333333" })
+
+			local transparent_groups = {
+				"StatusLine",
+				"Normal",
+				"NormalFloat",
+				"NormalNC",
+				"NormalNC",
+				"SignColumn",
+				"Pmenu",
+				"MsgSeparator",
+				"LineNrAbove",
+				"LineNrBelow",
+				"NvimTreeNormal",
+			}
+
+			for _, group in ipairs(transparent_groups) do
+				set_hl(0, group, { bg = "NONE" })
+			end
+		end,
 	},
 
-	-- breadcrumbs
 	{
-		"SmiteshP/nvim-navic",
+		"catppuccin/nvim",
+		priority = 1000,
+		name = "catppuccin",
+		config = function()
+			require("plugins.configs.catppuccin")
+		end,
+	},
+
+	-- statusline
+	{
+		"nvim-lualine/lualine.nvim",
 		event = "VeryLazy",
-		opts = { lsp = { auto_attach = true, preference = nil }, click = true },
+		config = function()
+			require("plugins.configs.lualine")
+		end,
 	},
 
 	-- fuzzy finder
@@ -220,12 +287,6 @@ local plugins = {
 		config = function()
 			require("plugins.configs.telescope")
 		end,
-	},
-
-	-- telescope file browser
-	{
-		"nvim-telescope/telescope-file-browser.nvim",
-		cmd = "Telescope file_browser",
 	},
 
 	-- auto close/rename tag
@@ -254,27 +315,20 @@ local plugins = {
 
 	-- comment code blocks
 	{
-		lazy = false,
 		"numToStr/Comment.nvim",
-		opts = { toggler = { line = "gcc", block = "gbc" } },
+		keys = { { "gc", mode = "v" }, "gcc", "gbc" },
+		config = function()
+			require("Comment").setup({
+				toggler = { line = "gcc", block = "gbc" },
+				pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook(),
+			})
+		end,
 	},
 
 	-- change commentstring according to the lang
 	{
 		"JoosepAlviste/nvim-ts-context-commentstring",
-		ft = {
-			"html",
-			"javascript",
-			"typescript",
-			"javascriptreact",
-			"typescriptreact",
-			"vue",
-			"tsx",
-			"jsx",
-			"php",
-			"css",
-			"scss",
-		},
+		keys = { { "gc", mode = "v" }, "gcc", "gbc" },
 	},
 
 	-- add support to editorconfig
@@ -283,17 +337,11 @@ local plugins = {
 		event = "VeryLazy",
 	},
 
-	-- get the node type under the cursor
-	{ "roobert/node-type.nvim" },
-
 	-- handle csv files
 	{
 		"cameron-wags/rainbow_csv.nvim",
-		config = function()
-			require("rainbow_csv").setup()
-		end,
-		ft = { "csv", "tsv", "csv_semicolon", "csv_whitespace", "csv_pipe", "rfc_csv", "rfc_semicolon" },
-		cmd = { "RainbowDelim", "RainbowDelimSimple", "RainbowDelimQuoted", "RainbowMultiDelim" },
+		ft = { "csv", "tsv" },
+		opts = {},
 	},
 
 	-- show colors code on the document
@@ -343,6 +391,12 @@ local plugins = {
 		end,
 	},
 
+	-- git commands
+	{
+		"tpope/vim-fugitive",
+		event = "VeryLazy",
+	},
+
 	-- indent lines guides
 	{
 		"lukas-reineke/indent-blankline.nvim",
@@ -353,48 +407,126 @@ local plugins = {
 		end,
 	},
 
-	-- HIDE top dir path
-	-- sidebar file navigation
+	-- luarocks support
 	{
-		"nvim-tree/nvim-tree.lua",
-		cmd = { "NvimTreeToggle", "NvimTreeFocus" },
-		version = "*",
-		opts = function()
-			require("plugins.configs.nvim-tree")
-		end,
+		"vhyrro/luarocks.nvim",
+		ft = { "norg" },
+		priority = 1000,
+		config = true,
+		opts = {
+			rocks = { "magick" },
+		},
 	},
 
 	-- personal wiki
 	{
+		"nvim-neorg/neorg",
+		dependencies = { "luarocks.nvim" },
+		ft = { "norg" },
+		cmd = { "Neorg" },
+		version = "*", -- Pin Neorg to the latest stable release
+		config = function()
+			require("plugins.configs.neorg")
+		end,
+	},
+
+	-- add image support to neovim
+	{
+		"3rd/image.nvim",
+		ft = { "markdown", "norg" },
+		dependencies = { "luarocks.nvim" },
+		config = function()
+			require("plugins.configs.image")
+		end,
+	},
+
+	-- personal wiki using vimwiki
+	{
 		"vimwiki/vimwiki",
 		cmd = { "VimwikiIndex", "VimwikiDiaryIndex" },
+		config = function()
+			local patterns = {
+				{
+					"GoalCompleted",
+					[[^\s*- \[X\]\s\+\(\d*%\?\|\d|\d\)\s*\(\d\{4\}-\d\{2\}-\d\{2\}\)\=\s\+\zs.*]],
+				},
+				{
+					"GoalLowPercentage",
+					[[^\s*- \[[X\| ]\]\s\+\zs\s*\s[0-4]\{0,1\}[0-9]\{0,1\}%\ze ]],
+				},
+				{
+					"GoalMediumPercentage",
+					[[^\s*- \[[X\| ]\]\s\+\zs\s[5-9][0-9]%\ze ]],
+				},
+				{
+					"GoalCompletedPercentage",
+					[[^\s*- \[[X\| ]\]\s\+\zs100%\ze ]],
+				},
+			}
+			vim.api.nvim_set_hl(0, "GoalCompleted", { fg = "gray", strikethrough = true, italic = true })
+			vim.api.nvim_set_hl(0, "GoalLowPercentage", { fg = "#555555" })
+			vim.api.nvim_set_hl(0, "GoalMediumPercentage", { fg = "#999999" })
+			vim.api.nvim_set_hl(0, "GoalCompletedPercentage", { fg = "#FFFFFF" })
+
+			for _, value in pairs(patterns) do
+				vim.fn.matchadd(value[1], value[2])
+			end
+		end,
 		init = function()
 			require("plugins.configs.vimwiki")
 		end,
+	},
+
+	-- pretty diagnostics, references, telescope results, quickfix and loclist
+	{
+		"folke/trouble.nvim",
+		cmd = { "Trouble" },
+		opts = {},
+		keys = {
+			{
+				"<leader>xx",
+				"<cmd>Trouble diagnostics toggle<cr>",
+				desc = "Diagnostics (Trouble)",
+			},
+			{
+				"<leader>xX",
+				"<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
+				desc = "Buffer Diagnostics (Trouble)",
+			},
+			{
+				"<leader>cs",
+				"<cmd>Trouble symbols toggle focus=false<cr>",
+				desc = "Symbols (Trouble)",
+			},
+			{
+				"<leader>cl",
+				"<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
+				desc = "LSP Definitions / references / ... (Trouble)",
+			},
+			{
+				"<leader>xL",
+				"<cmd>Trouble loclist toggle<cr>",
+				desc = "Location List (Trouble)",
+			},
+			{
+				"<leader>xQ",
+				"<cmd>Trouble qflist toggle<cr>",
+				desc = "Quickfix List (Trouble)",
+			},
+		},
+	},
+
+	-- SchemaStore catalog for json and yaml
+	{
+		"b0o/schemastore.nvim",
+		ft = { "json", "yaml" },
 	},
 
 	-- discord rich presence
 	-- {
 	-- 	"andweeb/presence.nvim",
 	-- 	event = "VeryLazy",
-	-- 	cond = function()
-	-- 		local is_discord_running = vim.fn.systemlist("pgrep -x Discord")
-	-- 		if is_discord_running[1] then
-	-- 			return true
-	-- 		end
-	-- 	end,
 	-- },
-
-	-- qml syntax highlighting
-	{
-		"peterhoeg/vim-qml",
-		ft = "qml",
-	},
-
-	{
-		"tikhomirov/vim-glsl",
-		ft = "glsl",
-	},
 }
 
 require("lazy").setup(plugins, opts)

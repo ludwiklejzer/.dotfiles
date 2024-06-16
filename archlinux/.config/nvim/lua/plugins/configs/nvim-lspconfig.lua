@@ -1,4 +1,6 @@
+-- setup neodev for nvim lua
 local lspconfig = require("lspconfig")
+require("neodev").setup()
 
 -- signcolumn symbols
 local function lspSymbol(name, icon)
@@ -52,7 +54,7 @@ local on_attach = function(_, bufnr)
 				close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
 				border = "single",
 				source = "always",
-				prefix = " ",
+				prefix = "",
 				scope = "cursor",
 			}
 			vim.diagnostic.open_float(nil, opts)
@@ -61,20 +63,21 @@ local on_attach = function(_, bufnr)
 end
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities.textDocument.completion.completionItem.snippetSupport = true
 
 -- Enable the following language servers with default configs
 local servers = {
 	"gdscript",
-	"pyright",
-	-- "jedi_language_server",
-	-- "pylsp",
 	"html",
 	"cssls",
 	"cssmodules_ls",
-	"yamlls",
+	"css_variables",
 	"bashls",
-	"jsonls",
 	"eslint",
+	"awk_ls",
+	"marksman",
+	"dockerls",
+	"docker_compose_language_service",
 }
 
 for _, lsp in ipairs(servers) do
@@ -84,67 +87,40 @@ for _, lsp in ipairs(servers) do
 	})
 end
 
--- LanguageTool
-local function getDictWords()
-	local path = vim.fn.stdpath("config") .. "/spell/words.utf-8.add"
-	local words = {}
-
-	for word in io.open(path, "r"):lines() do
-		table.insert(words, word)
-	end
-
-	return words
-end
-
-lspconfig.ltex.setup({
+lspconfig.jedi_language_server.setup({
 	on_attach = on_attach,
 	capabilities = capabilities,
-	cmd = { "ltex-ls" },
-	filetypes = { "tex", "latex" },
-	flags = { debounce_text_changes = 300 },
-	trace = { server = "verbose" },
+})
+
+lspconfig.pylsp.setup({
+	on_attach = on_attach,
+	capabilities = capabilities,
+	handlers = {
+		-- disable hover
+		["textDocument/hover"] = function() end,
+	},
 	settings = {
-		ltex = {
-			language = "en-US",
-			-- language = "pt-BR",
-			completionEnabled = true,
-			checkFrequency = "save",
-			enabled = {
-				"bibtex",
-				"context",
-				"context.tex",
-				"html",
-				"latex",
-				"markdown",
-				"org",
-				"restructuredtext",
-				"rsweave",
-			},
-			diagnosticSeverity = {
-				PASSIVE_VOICE = "hint",
-				PASSIVE_VOICE_SIMPLE = "hint",
-				SINGULAR_AGREEMENT_SENT_START = "error",
-				AGREEMENT_SENT_START = "error",
-				ADMIT_ENJOY_VB = "error",
-				EN_A_VS_AN = "error",
-				PUNCTUATION_PARAGRAPH_END = "error",
-				UPPERCASE_SENTENCE_START = "error",
-				HUNSPELL_RULE = "error",
-				GENERAL_GENDER_AGREEMENT_ERRORS = "error",
-				default = "information",
-			},
-			setenceCacheSize = 2000,
-			additionalRules = {
-				enablePickyRules = true,
-				motherTongue = "pt-BR",
-			},
-			dictionary = {
-				["en-US"] = getDictWords(),
-				["pt-BR"] = getDictWords(),
+		pylsp = {
+			plugins = {
+				rope = { enabled = true },
+				flake8 = { enabled = true },
+				mccabe = { enabled = true },
+				pycodestyle = { enabled = true },
+				pydocstyle = { enabled = true },
+				pyflakes = { enabled = false },
 			},
 		},
 	},
 })
+
+-- lspconfig.pyright.setup({
+-- 	on_attach = on_attach,
+-- 	capabilities = capabilities,
+-- 	handlers = {
+-- 		-- disable hover
+-- 		["textDocument/hover"] = function() end,
+-- 	},
+-- })
 
 -- Lua lsp config
 lspconfig.lua_ls.setup({
@@ -152,9 +128,32 @@ lspconfig.lua_ls.setup({
 	capabilities = capabilities,
 	settings = {
 		Lua = {
+			hint = { enable = true },
 			diagnostics = {
 				globals = { "vim" },
 			},
+		},
+	},
+})
+
+lspconfig.jsonls.setup({
+	on_attach = on_attach,
+	capabilities = capabilities,
+	settings = {
+		json = {
+			schemas = require("schemastore").json.schemas(),
+			validate = { enable = true },
+		},
+	},
+})
+
+lspconfig.yamlls.setup({
+	on_attach = on_attach,
+	capabilities = capabilities,
+	settings = {
+		yaml = {
+			schemaStore = { enable = false, url = "" },
+			schemas = require("schemastore").yaml.schemas(),
 		},
 	},
 })
@@ -171,13 +170,13 @@ lspconfig.tsserver.setup({
 		"typescriptreact",
 		"typescript.tsx",
 	},
-	-- run lsp for javascript in any directory
-	-- root_dir = function() return vim.loop.cwd() end,
+
 	root_dir = function()
 		return vim.loop.cwd()
 	end,
+
 	preferences = {
-		quotePreference = "single",
+		quotePreference = "double",
 	},
 })
 

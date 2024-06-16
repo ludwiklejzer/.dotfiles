@@ -1,7 +1,6 @@
 local options = {
 	context_commentstring = { enable = true },
-	context = { enable = true },
-	fold = { enable = true },
+	fold = { enable = true, patterns = {} },
 	indent = { enable = true },
 	highlight = { enable = true, use_languagetree = true },
 	ensure_installed = {
@@ -17,6 +16,7 @@ local options = {
 		"diff",
 		"sql",
 		"json",
+		"jsonc",
 		"javascript",
 		"tsx",
 		"typescript",
@@ -26,6 +26,14 @@ local options = {
 		"yaml",
 		"vue",
 		"vim",
+		"dockerfile",
+		"norg",
+		"git_config",
+		"gitcommit",
+		"git_rebase",
+		"gitignore",
+		"gitattributes",
+		"dap_repl",
 	},
 }
 

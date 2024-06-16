@@ -3,9 +3,11 @@ require("ibl").setup({
 	-- show_current_context_start = false,
 
 	whitespace = {},
+	indent = { char = "│" },
 	scope = {
 		enabled = true,
 		show_start = false,
+		highlight = "String",
 		include = {
 			node_type = {
 				["*"] = {
@@ -25,6 +27,7 @@ require("ibl").setup({
 					"dictionary",
 					"element",
 					"table",
+					"table_constructor",
 					"tuple",
 					"do_block",
 

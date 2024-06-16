@@ -1,58 +1,189 @@
-local utils = require("core.utils")
-
-local autocmd = utils.autocmd
-local augroup = utils.augroup
-
--- highlight cul number
-autocmd("BufEnter", nil, "*", ":hi CursorLineNr guibg=#E7ECF0")
-
--- set line wrap and line break on md and txt files
-autocmd("FileType", nil, "markdown,text,json", ":set linebreak wrap")
-
--- encrypted files
-augroup("OpenSSL", true)
-autocmd({ "BufReadPre", "FileReadPre" }, "OpenSSL", "*.aes", "lua require('cmp').setup.buffer({ sources = {} })")
-autocmd({ "BufReadPre", "FileReadPre" }, "OpenSSL", "*.aes", ":setlocal noswapfile noundofile nobackup binary shada=")
-autocmd({ "BufReadPost", "FileReadPost" }, "OpenSSL", "*.aes", ":lua OpenSsl.open()")
-autocmd({ "BufWritePre", "FileWritePre" }, "OpenSSL", "*.aes", ":lua OpenSsl.save()")
-autocmd({ "BufReadPost", "FileReadPost" }, "OpenSSL", "*.aes", ":setlocal nobinary")
-autocmd({ "BufWritePost", "FileWritePost" }, "OpenSSL", "*.aes", ":silent undo")
-
--- set vimwiki folding method to `syntax` because treesitter
--- `expr` does not support folding headers
-autocmd("FileType", nil, "vimwiki", ":setlocal foldmethod=syntax")
-
--- persistent folding
-augroup("AutoSaveFolds", true)
-autocmd("BufWinLeave", "AutoSaveFolds", "*", "if mode() !=# 'i' && expand('%:t') != '' |  silent! mkview | endif")
-autocmd("BufWinEnter", "AutoSaveFolds", "*", "if mode() !=# 'i' && expand('%:t') != ''  | silent! loadview | endif")
-
--- meaningful backup name
-autocmd("BufWritePre", nil, "*", "let &bex = '@' . strftime(\"%F.%H:%M\")")
-
--- remove line numbers from terminal window and start in insert mode
-autocmd("TermOpen", nil, "*", "setlocal nonumber norelativenumber | startinsert")
+local autocmd = vim.api.nvim_create_autocmd
+local augroup = function(name, clear)
+	return vim.api.nvim_create_augroup(name, { clear = clear })
+end
 
 -- Open a file from its last left off position
-autocmd(
-	"BufReadPost",
-	nil,
-	"*",
-	"autocmd FileType <buffer> ++once "
+autocmd({ "BufReadPost" }, {
+	group = augroup("OpenLastPosition"),
+	pattern = "*",
+	command = "autocmd FileType <buffer> ++once "
 		.. "if &ft !~# 'commit\\|rebase' && "
 		.. 'line("\'\\"") > 1 && '
-		.. 'line("\'\\"") <= line("$") | exe \'normal! g`"\' | endif'
-)
+		.. 'line("\'\\"") <= line("$") | exe \'normal! g`"\' | endif',
+})
 
--- Close nvim-tree when it is the last window
-autocmd("BufEnter", nil, "*", "if winnr('$') == 1 && bufname() == 'NvimTree_' . tabpagenr() | quit | endif")
+-- Overwrite folding fillchars from orgmode plugin
+autocmd({ "FileType" }, {
+	group = augroup("OrgFillchars"),
+	pattern = "org",
+	callback = function()
+		vim.opt_local.fillchars:append("fold:·")
+	end,
+})
 
-autocmd(
-	"ColorScheme",
-	nil,
-	"*",
-	":lua if vim.g.colors_name ~= 'wally' then require('lualine').setup({options = {theme = 'auto'}}) else require('lualine').setup({options = {theme = 'auto'}}) end"
-)
+-- Enable treesitter highlight for md and qml files
+autocmd({ "FileType" }, {
+	group = augroup("TSEnable"),
+	pattern = { "markdown", "qml" },
+	callback = function()
+		vim.cmd("TSEnable highlight")
+	end,
+})
+
+-- Overwrite org highlight colors
+autocmd({ "FileType" }, {
+	group = augroup("OrgHiColors"),
+	pattern = "org",
+	callback = function()
+		vim.cmd([[
+		hi link @org.priority.highest.org Constant
+		]])
+	end,
+})
+
+-- load treesitter highlight in norg files
+autocmd({ "FileType" }, {
+	group = augroup("LoadTreesitterNorg"),
+	pattern = "norg",
+	callback = function()
+		vim.cmd("TSBufEnable highlight")
+		vim.cmd("hi @neorg.tags.ranged_verbatim.code_block guibg=#222222")
+	end,
+})
+
+-- persistent folding
+autocmd({ "BufWinEnter" }, {
+	group = augroup("AutoLoadFolding"),
+	pattern = "*",
+	callback = function()
+		if vim.fn.mode() ~= "i" and vim.fn.expand("%:t") ~= "" then
+			vim.cmd("silent! loadview")
+		end
+	end,
+})
+
+autocmd({ "BufWinLeave" }, {
+	group = augroup("AutoSaveFolding"),
+	pattern = "*",
+	callback = function()
+		if vim.fn.mode() ~= "i" and vim.fn.expand("%:t") ~= "" then
+			vim.cmd("silent! mkview")
+		end
+	end,
+})
+
+-- meaningful backup name
+autocmd({ "BufWritePre" }, {
+	group = augroup("BackupName"),
+	pattern = "*",
+	callback = function()
+		vim.opt_local.bex = "@" .. os.date("%F")
+	end,
+})
+
+-- remove line numbers from terminal and some filetypes
+autocmd({ "TermOpen" }, {
+	group = augroup("RemoveTerminalLineNr"),
+	pattern = { "*" },
+	callback = function()
+		vim.opt_local.number = false
+		vim.opt_local.relativenumber = false
+		-- vim.cmd("startinsert")
+	end,
+})
+autocmd({ "FileType" }, {
+	group = augroup("RemoveLineNr"),
+	pattern = { "qf" },
+	callback = function()
+		vim.opt_local.number = false
+		vim.opt_local.relativenumber = false
+	end,
+})
 
 -- refresh lualine when resizing
-autocmd("VimResized", nil, "*", ":lua require('lualine').refresh()")
+autocmd({ "VimResized" }, {
+	group = augroup("RefreshResizeLualine"),
+	pattern = { "*" },
+	callback = function()
+		require("lualine").refresh()
+	end,
+})
+
+-- Highlight on yank
+vim.api.nvim_create_autocmd("TextYankPost", {
+	group = augroup("highlight_yank"),
+	callback = function()
+		vim.highlight.on_yank()
+	end,
+})
+
+-- resize splits if window got resized
+vim.api.nvim_create_autocmd({ "VimResized" }, {
+	group = augroup("resize_splits"),
+	callback = function()
+		local current_tab = vim.fn.tabpagenr()
+		vim.cmd("tabdo wincmd =")
+		vim.cmd("tabnext " .. current_tab)
+	end,
+})
+
+-- close some filetypes with <q>
+vim.api.nvim_create_autocmd("FileType", {
+	group = augroup("close_with_q"),
+	pattern = {
+		"PlenaryTestPopup",
+		"help",
+		"man",
+		"lspinfo",
+		"notify",
+		"qf",
+		"query",
+		"spectre_panel",
+		"startuptime",
+		"tsplayground",
+		"neotest-output",
+		"checkhealth",
+		"neotest-summary",
+		"neotest-output-panel",
+	},
+	callback = function(event)
+		vim.bo[event.buf].buflisted = false
+		vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = event.buf, silent = true })
+	end,
+})
+
+-- Fix conceallevel for json files
+autocmd({ "FileType" }, {
+	group = augroup("json_conceal"),
+	pattern = { "json", "jsonc", "json5" },
+	callback = function()
+		vim.opt_local.conceallevel = 0
+	end,
+})
+
+-- Cursor Line active only in current window
+autocmd({ "VimEnter", "WinEnter", "BufWinEnter" }, {
+	pattern = "*",
+	command = "setlocal cursorline",
+})
+autocmd({ "WinLeave" }, {
+	pattern = "*",
+	command = "setlocal nocursorline",
+})
+
+-- Enable docker_compose_language_service LSP enforcing filetype
+-- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#docker_compose_language_service
+autocmd({ "FileType" }, {
+	group = augroup("dockerChangeFt"),
+	pattern = { "yaml" },
+	callback = function(file)
+		local names = { "compose.yaml", "compose.yml", "docker-compose.yaml", "docker-compose.yml" }
+		for _, name in pairs(names) do
+			if file.file == name then
+				vim.bo.filetype = "yaml.docker-compose"
+				break
+			end
+		end
+	end,
+})

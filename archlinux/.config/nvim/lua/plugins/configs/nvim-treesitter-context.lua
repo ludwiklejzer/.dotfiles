@@ -13,10 +13,4 @@ local options = {
 	on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching
 }
 
-local hl = vim.api.nvim_set_hl
-
-hl(0, "TreesitterContext", { bg = "#f2f1ed", italic = true })
-hl(0, "TreesitterContextBottom", { bg = "#f2f1ed", italic = true })
-hl(0, "TreesitterContextLineNumber", { bg = "#f2f1ed", italic = true })
-
 return options
