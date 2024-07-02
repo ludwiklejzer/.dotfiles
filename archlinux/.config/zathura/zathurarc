@@ -14,6 +14,7 @@ set page-padding 5
 set statusbar-basename true
 set statusbar-home-tilde true
 set guioptions none
+set database sqlite
 
 
 #
