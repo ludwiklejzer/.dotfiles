@@ -5,14 +5,12 @@ catppuccin.background = "#111111"
 
 local config = {
 	font = wezterm.font_with_fallback({
-		"JetBrainsMono",
-		-- "RobotoMono Nerd Font",
-		-- "CartographCF Nerd Font",
-		-- "CaskaydiaCove Nerd Font Propo",
+		"JetBrainsMono SemiBold",
 		"Noto Sans CJK JP",
 	}),
+	harfbuzz_features = { "zero", "calt", "ss01" },
 	freetype_load_flags = "NO_HINTING",
-	font_size = 11.5,
+	font_size = 11,
 	force_reverse_video_cursor = true,
 	line_height = 1,
 	cell_width = 0.9,
@@ -59,8 +57,8 @@ local config = {
 		-- examples below
 		orientation = "Vertical",
 		colors = {
-			"rgba(27,27,27, 1)",
-			"rgba(27,27,27, 0.65)",
+			"rgba(34, 37, 38, 1)",
+			"rgba(34, 37, 38, 0.65)",
 		},
 		interpolation = "Linear",
 		blend = "Rgb",
