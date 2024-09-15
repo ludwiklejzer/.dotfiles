@@ -84,24 +84,29 @@ def setup(c, config) -> None:
         "mw": "https://www.merriam-webster.com/dictionary/{}",
         "gi": "https://www.google.com/search?tbm=isch&q={}&tbs=imgo:1",
         "gn": "https://news.google.com/search?q={}",
-        "i": "https://www.instagram.com/explore/tags/{}",
+        "tpf": "https://translate.google.com/?sl=pt&tl=fr&text={}",
+        "tpe": "https://translate.google.com/?sl=pt&tl=en&text={}",
+        "tfp": "https://translate.google.com/?sl=fr&tl=pt&text={}",
+        "tep": "https://translate.google.com/?sl=en&tl=pt&text={}",
         "m": "https://www.google.com/maps/search/{}",
         "p": "https://pry.sh/{}",
         "r": "https://www.reddit.com/search?q={}",
         "w": "https://en.wikipedia.org/wiki/{}",
         "y": "https://www.youtube.com/results?search_query={}",
-        "z": "https://z-library.se/s/?q={}",
+        "z": "https://z-library.rs/s/?q={}",
         "g": "https://www.goodreads.com/search?q={}",
         "s": "https://open.spotify.com/search/{}",
         "t": "https://trakt.tv/search?query={}",
     }
+
     c.aliases = {
         "adblock-toggle": "config-cycle -t content.blocking.enabled",
         "incognito": "open --private",
         "mpv": "spawn --detach mpv {url}",
         "zathura": "hint pdf spawn --detach zathura {hint-url}",
-        "paywall": "open https://1ft.io/{url}",
+        "paywall": "open https://freedium.cfd/{url}",
         # "paywall": "open http://webcache.googleusercontent.com/search?q=cache:{url}",
+        "tor-toggle": "config-cycle content.proxy socks://localhost:9050 system;;message-info 'Tor proxy toggled'",
     }
 
     # New tab page
@@ -157,19 +162,17 @@ def setup(c, config) -> None:
         "https://raw.githubusercontent.com/mmotti/pihole-regex/master/regex.list",
         "https://raw.githubusercontent.com/bogachenko/fuckfuckadblock/master/fuckfuckadblock.txt",
         "https://raw.githubusercontent.com/Isaaker/Spotify-AdsList/main/Lists/standard_list.txt",
-        # "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/annoyances.txt",
-        # "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/badlists.txt",
-        # "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/badware.txt",
-        # "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/filters-2020.txt",
-        # "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/filters-2021.txt",
-        # "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/filters.txt",
-        # "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/privacy.txt",
-        # "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/resource-abuse.txt",
-        # "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/thirdparties/easylist-downloads.adblockplus.org/easyprivacy.txt",
-        # "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/thirdparties/pgl.yoyo.org/as/serverlist",
-        # "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/fakenews-gambling/hosts",
-        # "https://raw.githubusercontent.com/AdAway/adaway.github.io/master/hosts.txt",
-        # "https://fanboy.co.nz/fanboy-problematic-sites.txt",
+        "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/annoyances.txt",
+        "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/badlists.txt",
+        "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/badware.txt",
+        "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/filters.txt",
+        "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/privacy.txt",
+        "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/resource-abuse.txt",
+        "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/thirdparties/easylist-downloads.adblockplus.org/easyprivacy.txt",
+        "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/thirdparties/pgl.yoyo.org/as/serverlist",
+        "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/fakenews-gambling/hosts",
+        "https://raw.githubusercontent.com/AdAway/adaway.github.io/master/hosts.txt",
+        "https://fanboy.co.nz/fanboy-problematic-sites.txt",
     ]
 
     # Use Brave adblock if available, or fall back to host blocking
@@ -187,6 +190,9 @@ def setup(c, config) -> None:
     # Select the system text editor
     c.editor.command = ["wezterm", "start", "--always-new-process", "nvim", "{file}"]
 
+    # Open PDFs using pdfjs by default
+    config.set("content.pdfjs", True)
+
     # Select specific css elements on document
     config.set(
         "hints.selectors",
@@ -202,6 +208,10 @@ def setup(c, config) -> None:
 
     # Override mode in domains
     config.set("input.mode_override", "passthrough", "*://www.figma.com/*")
+    config.set(
+        "input.mode_override", "passthrough", "https://colab.research.google.com/*"
+    )
+    config.set("input.mode_override", "passthrough", "https://docs.google.com/*")
 
     # Allow websites to lock your mouse pointer.
     config.set("content.mouse_lock", True, "https://game.play-cs.com")
