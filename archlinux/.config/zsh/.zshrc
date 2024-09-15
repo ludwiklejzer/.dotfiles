@@ -1,7 +1,7 @@
-export ZSH="$ZDOTDIR/ohmyzsh"
+export ZSH="$ZDOTDIR/oh-my-zsh"
 
 ZSH_THEME="robbyrussell"
-plugins=(git npm bgnotify z colored-man-pages yarn npm adb vi-mode asdf)
+plugins=(git npm bgnotify z colored-man-pages yarn npm vi-mode asdf)
 COMPLETION_WAITING_DOTS="true"
 
 # more zsh completions (https://github.com/zsh-users/zsh-completions)
@@ -50,6 +50,7 @@ alias calc='bc'
 alias feh='feh --scale-down'
 alias wallpaper='\ls ~/Pictures/wallpapers | fzf --no-info --no-scrollbar --preview="feh --bg-fill ~/Pictures/wallpapers/{}" | xargs -I {} feh --bg-fill ~/Pictures/wallpapers/{}'
 alias screensaver='cmatrix -M "Hello, friend" -C red -s -u 7 -k'
+alias screencast="ffmpeg -f x11grab -s $(xrandr | grep '*' | awk '{ print $1 }') -i :0.0 -vcodec libx264 -preset ultrafast -pix_fmt yuv420p -f matroska - | castnow --quiet - --type video/mp4"
 alias ytdl='youtube-dl'
 alias myip='echo "\n\033[91mLocal IP\033[0m" && ip -br -c a && echo "\n\033[91mPublic IP\033[0m" && curl https://ip.me/'
 alias wmclass="xprop | grep WM_CLASS"
