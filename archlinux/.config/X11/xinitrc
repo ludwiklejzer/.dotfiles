@@ -1,4 +1,11 @@
-~/.fehbg &                          # set background
+set_wallpaper() {
+	feh \
+		--randomize \
+		--bg-fill ~/Pictures/wallpapers &> /dev/null || \
+		feh ~/.fehbg  &
+}
+
+set_wallpaper &
 picom &                             # compositor
 ibus-daemon -drxR &                 # keyboard input manager
 dunst &                             # notification daemon
