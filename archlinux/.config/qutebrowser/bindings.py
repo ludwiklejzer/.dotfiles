@@ -68,7 +68,7 @@ def setup(config):
     )
 
     # Toggle developer tools
-    config.bind("<f12>", "devtools")
+    config.bind("<f12>", "devtools bottom")
 
     # OCR
     config.bind(
