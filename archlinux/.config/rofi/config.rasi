@@ -69,8 +69,8 @@ window {
 	width: 500;
 	padding: 0;
 	border: 1px;
-	background-color: rgba(17,17,17,0.75);
-	border-color: #333333;
+	background-color: rgba(34,37,38,0.75);
+	border-color: #444444;
 	border-radius: 10px;
 	box-shadow: 10px 10px 10px;
 	box-shadow-color: #FFFFFF;
