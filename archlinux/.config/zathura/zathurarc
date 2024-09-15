@@ -9,7 +9,7 @@ set adjust-open width
 set n-completion-items 10
 set statusbar-v-padding 20: 
 set statusbar-h-padding 20
-set font "SpaceMono Nerd Font Mono normal 10"
+set font "JetBrainsMono 10"
 set page-padding 5
 set statusbar-basename true
 set statusbar-home-tilde true
@@ -23,6 +23,7 @@ set database sqlite
 #
 map <C-i> recolor
 map p print
+map <A-s> toggle_statusbar
 
 
 #
