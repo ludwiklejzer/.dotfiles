@@ -5,13 +5,13 @@ local copilot = require("copilot.suggestion")
 
 local function border(hl_name)
 	return {
-		{ "┌", hl_name },
+		{ "╭", hl_name },
 		{ "─", hl_name },
-		{ "┐", hl_name },
+		{ "╮", hl_name },
 		{ "│", hl_name },
-		{ "┘", hl_name },
+		{ "╯", hl_name },
 		{ "─", hl_name },
-		{ "└", hl_name },
+		{ "╰", hl_name },
 		{ "│", hl_name },
 	}
 end
@@ -30,11 +30,9 @@ cmp.setup({
 	enabled = function()
 		-- disable completion in comments and prompt buftype
 		-- keep command mode completion enabled when cursor is in a comment
-		local buftype = vim.bo.filetype
+		local buftype = vim.bo.buftype
 
-		if vim.api.nvim_get_mode().mode == "c" then
-			return true
-		elseif buftype == "prompt" then
+		if buftype == "prompt" then
 			return false
 		elseif context.in_treesitter_capture("comment") or context.in_syntax_group("Comment") then
 			return false
@@ -48,16 +46,16 @@ cmp.setup({
 		},
 	},
 	window = {
-		completion = {
-			border = border("CmpBorder"),
+		completion = cmp.config.window.bordered({
+			winhighlight = "Normal:None,FloatBorder:TelescopeBorder,CursorLine:PmenuSel,Search:None",
 			col_offset = 0,
 			side_padding = 1,
 			scrollbar = false,
 			completeopt = "menu,menuone,noinsert,preview",
-		},
-		documentation = {
-			border = border("CmpDocBorder"),
-		},
+		}),
+		documentation = cmp.config.window.bordered({
+			winhighlight = "Normal:None,FloatBorder:TelescopeBorder,CursorLine:PmenuSel,Search:None",
+		}),
 	},
 	snippet = {
 		expand = function(args)
@@ -111,6 +109,7 @@ cmp.setup({
 				Spell = "󰓆",
 			}
 			vim_item.menu = ({
+				dotenv = "[EnvVar]",
 				buffer = "[Buffer]",
 				nvim_lsp = "[LSP]",
 				luasnip = "[LuaSnip]",
@@ -118,7 +117,6 @@ cmp.setup({
 				spell = "[Spell]",
 				calc = "[Calc]",
 				emoji = "[Emoji]",
-				npm = "[NPM]",
 				orgmode = "[Orgmode]",
 				neorg = "[Neorg]",
 			})[entry.source.name]
@@ -141,25 +139,25 @@ cmp.setup({
 		end,
 	},
 	mapping = {
-		["<A-e>"] = cmp.mapping(function(fallback)
+		["<A-e>"] = cmp.mapping(function()
 			copilot.dismiss()
 		end, { "i", "s" }),
-		["<M-j>"] = cmp.mapping(function(fallback)
+		["<M-j>"] = cmp.mapping(function()
 			cmp.abort()
 			copilot.next()
 		end, { "i", "s" }),
-		["<M-k>"] = cmp.mapping(function(fallback)
+		["<M-k>"] = cmp.mapping(function()
 			cmp.abort()
 			copilot.prev()
 		end, { "i", "s" }),
-		["<M-w>"] = cmp.mapping(function(fallback)
+		["<M-w>"] = cmp.mapping(function()
 			copilot.accept_word()
 		end, { "i", "s" }),
-		["<M-l>"] = cmp.mapping(function(fallback)
+		["<M-l>"] = cmp.mapping(function()
 			copilot.accept_line()
 		end, { "i", "s" }),
 
-		["<C-p>"] = cmp.mapping(function(fallback)
+		["<C-p>"] = cmp.mapping(function()
 			if cmp.visible() then
 				cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
 			elseif luasnip.jumpable(-1) then
@@ -168,7 +166,7 @@ cmp.setup({
 				cmp.complete()
 			end
 		end, { "i", "s" }),
-		["<C-n>"] = cmp.mapping(function(fallback)
+		["<C-n>"] = cmp.mapping(function()
 			if cmp.visible() then
 				cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
 			elseif luasnip.expand_or_jumpable() then
@@ -225,11 +223,26 @@ cmp.setup({
 		-- { name = "copilot" },
 		{ name = "nvim_lsp" },
 		{ name = "path" },
-		{ name = "spell" },
+		-- { name = "spell" },
 		{ name = "calc" },
 		{ name = "buffer" },
 		{ name = "emoji" },
+		{ name = "dotenv" },
 	},
+})
+
+cmp.setup.cmdline({ ":", "/", "?" }, {
+	mapping = cmp.mapping.preset.cmdline(),
+	sources = cmp.config.sources({
+		{ name = "path" },
+	}, {
+		{
+			name = "cmdline",
+			option = {
+				ignore_cmds = { "Man", "!" },
+			},
+		},
+	}),
 })
 
 -- buffer-specific configs

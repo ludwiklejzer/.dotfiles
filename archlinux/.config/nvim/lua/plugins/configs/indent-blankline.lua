@@ -204,6 +204,7 @@ require("ibl").setup({
 			"nvchad_cheatsheet",
 			"mason",
 			"lazy",
+			"norg",
 		},
 	},
 })

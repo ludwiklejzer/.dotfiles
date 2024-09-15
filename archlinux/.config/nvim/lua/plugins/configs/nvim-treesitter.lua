@@ -1,5 +1,6 @@
+local configs = require("nvim-treesitter.configs")
+
 local options = {
-	context_commentstring = { enable = true },
 	fold = { enable = true, patterns = {} },
 	indent = { enable = true },
 	highlight = { enable = true, use_languagetree = true },
@@ -26,6 +27,7 @@ local options = {
 		"yaml",
 		"vue",
 		"vim",
+		"ini",
 		"dockerfile",
 		"norg",
 		"git_config",
@@ -33,8 +35,8 @@ local options = {
 		"git_rebase",
 		"gitignore",
 		"gitattributes",
-		"dap_repl",
+		-- "dap_repl",
 	},
 }
 
-return options
+configs.setup(options)

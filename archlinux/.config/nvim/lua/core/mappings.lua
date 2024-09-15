@@ -32,6 +32,10 @@ map("i", "<S-Tab>", "<C-d>")
 -- map("i", "<A-l>", "<Esc>A;")
 -- map("n", "<A-l>", "A;<Esc>")
 
+-- Swap mark jump types ` and '
+map("n", "`", "'")
+map("n", "'", "`")
+
 -- resize window
 map("n", "<UP>", ":resize -2<CR>")
 map("n", "<DOWN>", ":resize +2<CR>")
@@ -68,7 +72,6 @@ map("t", "<C-w>j", "<cmd>wincmd j<cr>", { desc = "Go to Lower Window" })
 map("t", "<C-w>h", "<cmd>wincmd h<cr>", { desc = "Go to Left Window" })
 
 -- misc
-map("n", "<Leader>cc", ":Telescope colorscheme<CR>") -- toggle wrap
 map("n", "<Leader>sw", ":set wrap!<CR>") -- toggle wrap
 map({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><esc>", { desc = "Save Buffer" })
 map("n", "q", ":quit<CR>") -- quit window
@@ -102,7 +105,7 @@ map(
 	"<Leader>fp",
 	":lua require('telescope.builtin').find_files{cwd=require('telescope.utils').buffer_dir(),  preview_title='', prompt_title=''}<CR>"
 )
-map("n", "<Leader>fg", ":Telescope live_grep preview_title= prompt_title=<CR>")
+map("n", "<Leader>fg", ":Telescope live_grep<CR>")
 map("n", "<Leader>f<Leader>g", ':lua vim.fn.execute("Telescope live_grep cwd=" .. vim.fn.expand("%:h"))<CR>')
 map("n", "<Leader>cm", ":Telescope git_commits<CR>")
 map("n", "<Leader>gst", ":Telescope git_status<CR>")
@@ -110,6 +113,9 @@ map("n", "<Leader>fh", ":Telescope help_tags<CR>")
 map("n", "<Leader>fo", ":Telescope oldfiles<CR>")
 map("n", "<Leader>th", ":Telescope themes<CR>")
 map("n", "<leader>fa", "<cmd> :Telescope find_files follow=true no_ignore=true hidden=true <CR>")
+map("n", "<Leader>ft", ":Telescope<CR>")
+map("n", "<Leader>fr", ":Telescope resume<CR>")
+map("n", "<Leader>cc", ":Telescope colorscheme<CR>")
 
 -- lsp
 map("n", "<Leader>gD", "<cmd>lua vim.lsp.buf.declaration()<CR>")

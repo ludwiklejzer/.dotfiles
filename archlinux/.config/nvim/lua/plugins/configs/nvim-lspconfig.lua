@@ -2,17 +2,6 @@
 local lspconfig = require("lspconfig")
 require("neodev").setup()
 
--- signcolumn symbols
-local function lspSymbol(name, icon)
-	local hl = "DiagnosticSign" .. name
-	vim.fn.sign_define(hl, { text = icon, numhl = hl, texthl = hl })
-end
-
-lspSymbol("Error", "")
-lspSymbol("Info", "")
-lspSymbol("Hint", "")
-lspSymbol("Warn", "")
-
 local handlers = {
 	{ "hover", "hover" },
 }
@@ -28,7 +17,14 @@ vim.diagnostic.config({
 		source = "always",
 	},
 	virtual_text = true,
-	signs = true,
+	signs = {
+		text = {
+			[vim.diagnostic.severity.ERROR] = "",
+			[vim.diagnostic.severity.WARN] = "",
+			[vim.diagnostic.severity.INFO] = "",
+			[vim.diagnostic.severity.HINT] = "",
+		},
+	},
 	underline = true,
 	update_in_insert = false,
 })
@@ -78,6 +74,8 @@ local servers = {
 	"marksman",
 	"dockerls",
 	"docker_compose_language_service",
+	"vuels",
+	"sqls",
 }
 
 for _, lsp in ipairs(servers) do
@@ -171,10 +169,7 @@ lspconfig.tsserver.setup({
 		"typescript.tsx",
 	},
 
-	root_dir = function()
-		return vim.loop.cwd()
-	end,
-
+	root_dir = lspconfig.util.root_pattern("tsconfig.json", "jsconfig.json", "package.json", ".git"),
 	preferences = {
 		quotePreference = "double",
 	},
@@ -194,7 +189,7 @@ lspconfig.clangd.setup({
 lspconfig.emmet_ls.setup({
 	on_attach = on_attach,
 	capabilities = capabilities,
-	filetypes = { "html", "css", "javascriptreact", "javascript.jsx", "typescriptreact" },
+	filetypes = { "html", "javascriptreact", "javascript.jsx", "typescriptreact", "vue" },
 })
 
 -- custom qml lsp

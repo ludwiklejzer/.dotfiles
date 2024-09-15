@@ -1,5 +1,9 @@
 local lsp_signature = require("lsp_signature")
 
+local set_hl = vim.api.nvim_set_hl
+
+set_hl(0, "FloatBorder", { link = "TelescopeBorder" })
+
 lsp_signature.setup({
 	lsp_signature.on_attach({
 		bind = true,
@@ -12,7 +16,7 @@ lsp_signature.setup({
 		max_height = 22,
 		max_width = 70,
 		handler_opts = {
-			border = "single",
+			border = "rounded",
 		},
 		zindex = 200,
 		padding = " ",

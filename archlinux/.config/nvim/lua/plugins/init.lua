@@ -66,6 +66,7 @@ local plugins = {
 	{
 		"folke/neodev.nvim",
 		event = "VeryLazy",
+		ft = { "lua" },
 		config = function()
 			require("neodev").setup({
 				library = { plugins = { "nvim-dap-ui" }, types = true },
@@ -86,7 +87,7 @@ local plugins = {
 		"nvim-treesitter/nvim-treesitter",
 		lazy = false,
 		build = ":TSUpdate",
-		opts = function()
+		config = function()
 			require("plugins.configs.nvim-treesitter")
 		end,
 	},
@@ -117,7 +118,7 @@ local plugins = {
 	-- completion engine
 	{
 		"hrsh7th/nvim-cmp",
-		event = "InsertEnter",
+		event = { "ModeChanged" },
 		dependencies = {
 			-- cmp sources
 			"saadparwaiz1/cmp_luasnip", -- luasnip completion
@@ -128,7 +129,8 @@ local plugins = {
 			"hrsh7th/cmp-calc", -- math calculation
 			"hrsh7th/cmp-emoji",
 			"rcarriga/cmp-dap",
-
+			"SergioRibera/cmp-dotenv",
+			"hrsh7th/cmp-cmdline",
 			{
 				"zbirenbaum/copilot-cmp",
 				build = ":Copilot auth",
@@ -219,28 +221,21 @@ local plugins = {
 
 	-- colorscheme
 	{
-		"Murtaza-Udaipurwala/gruvqueen",
-		priority = 1000,
+		"svitax/fennec-gruvbox.nvim",
 		lazy = false,
+		priority = 1000,
+		dependencies = { "rktjmp/lush.nvim" },
 		config = function()
-			require("gruvqueen").setup({
-				config = {
-					disable_bold = false,
-					italic_comments = true,
-					italic_keywords = false,
-					italic_functions = false,
-					italic_variables = false,
-					invert_selection = false,
-					style = "material", -- 'original', 'mix', 'material'
-					transparent_background = true,
-				},
+			vim.cmd([[colorscheme fennec-gruvbox]])
+
+			-- set transparent hi groups
+			vim.api.nvim_create_autocmd({ "BufWinEnter" }, {
+				group = nil,
+				pattern = "*.norg",
+				callback = function()
+					vim.api.nvim_set_hl(0, "Folded", { bg = nil, fg = "#585b5c" })
+				end,
 			})
-
-			local set_hl = vim.api.nvim_set_hl
-
-			set_hl(0, "IlluminatedWordText", { bg = "#333333" })
-			set_hl(0, "IlluminatedWordRead", { bg = "#333333" })
-			set_hl(0, "IlluminatedWordWrite", { bg = "#333333" })
 
 			local transparent_groups = {
 				"StatusLine",
@@ -257,17 +252,10 @@ local plugins = {
 			}
 
 			for _, group in ipairs(transparent_groups) do
-				set_hl(0, group, { bg = "NONE" })
+				vim.api.nvim_set_hl(0, group, { bg = "NONE" })
 			end
-		end,
-	},
-
-	{
-		"catppuccin/nvim",
-		priority = 1000,
-		name = "catppuccin",
-		config = function()
-			require("plugins.configs.catppuccin")
+			-- Custom hi groups
+			vim.api.nvim_set_hl(0, "@neorg.markup.verbatim", { bg = "#333333" })
 		end,
 	},
 
@@ -438,6 +426,11 @@ local plugins = {
 		config = function()
 			require("plugins.configs.image")
 		end,
+	},
+
+	{
+		"OXY2DEV/markview.nvim",
+		ft = { "markdown" },
 	},
 
 	-- personal wiki using vimwiki

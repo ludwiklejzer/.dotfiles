@@ -7,6 +7,7 @@ g.maplocalleader = ","
 vim.cmd("set modeline")
 
 -- global options
+opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,terminal,resize,winpos"
 opt.termguicolors = true -- true colors support
 opt.modeline = true
 opt.relativenumber = true -- relative line numbers
@@ -25,6 +26,7 @@ opt.undofile = true -- keep a permanet undo file
 opt.updatetime = 750 -- interval for writing swap file
 opt.timeoutlen = 1000 -- time to wait for a mapping
 opt.wrap = false -- break line or not
+opt.errorbells = false -- disable error bell sound
 opt.breakindent = true -- broken indent line
 opt.breakindentopt = "sbr" -- broken indent line options
 opt.showbreak = "┆ " -- broken indent line icon
@@ -39,7 +41,9 @@ opt.cursorlineopt = "both" -- highlight the line and number
 opt.showmode = false -- hide status mode
 opt.cmdheight = 0 -- command line height
 opt.history = 1000 -- history size
-opt.clipboard = "unnamedplus" -- sync clipboard between OS and Neovim
+vim.schedule(function()
+	opt.clipboard = vim.env.SSH_TTY and "" or "unnamedplus" -- Sync with system clipboard
+end)
 opt.ignorecase = true -- search case insensitive
 opt.smartcase = true -- override ignorecase
 opt.title = true -- show filename in the title bar
@@ -58,7 +62,9 @@ opt.fillchars = {
 	vertright = " ",
 	diff = "╱",
 }
-opt.grepprg = "rg --vimgrep"
+if vim.fn.executable("rg") ~= 0 then
+	opt.grepprg = "rg --vimgrep"
+end
 opt.grepformat = "%f:%l:%c:%m"
 opt.signcolumn = "auto:1" -- show only when there is a sign to show
 opt.pumheight = 15 -- maximum number of items in the popup menu
@@ -73,8 +79,8 @@ opt.backupdir = "/home/ludwiklejzer/.local/state/nvim/backup/" -- backup path
 opt.writebackup = true -- backup before overwriting the current buffer
 opt.backupcopy = "yes" -- overwrite the original backup file
 -- saved words
-opt.spellfile = vim.fn.stdpath("config") .. "/spell/en.utf-8.add," .. vim.fn.stdpath("config") .. "/spell/pt.utf-8.add"
-opt.spelllang = "en,pt"
+-- opt.spellfile = vim.fn.stdpath("config") .. "/spell/en.utf-8.add," .. vim.fn.stdpath("config") .. "/spell/pt.utf-8.add"
+-- opt.spelllang = "en,pt"
 opt.foldmethod = "expr" -- folding based on expression
 opt.foldexpr = "nvim_treesitter#foldexpr()" -- expression used on folding
 opt.foldenable = true -- folding on VimEnter
