@@ -115,21 +115,21 @@
 # IMPORTANT: colors have to be defined in quotation marks.
 # Otherwise the "#" and following would be interpreted as a comment.
 		icon = "notifications-new-symbolic"
-		background = "#111111bf"
+		background = "#222526bf"
 		foreground = "#ffffff"
 		timeout = 3
 # Icon for notifications with low urgency, uncomment to enable
 
 		[urgency_normal]
 		icon = "notifications-new-symbolic"
-		background = "#111111bf"
+		background = "#222526bf"
 		foreground = "#ffffff"
 		timeout = 5
 # Icon for notifications with normal urgency, uncomment to enable
 
 		[urgency_critical]
 		icon = "critical-notif-symbolic"
-		background = "#111111bf"
+		background = "#222526bf"
 		foreground = "#913737"
 		timeout = 0
     frame_color = "#913737"
