@@ -4,6 +4,7 @@ local catppuccin = wezterm.color.get_builtin_schemes()["Catppuccin Mocha"]
 catppuccin.background = "#111111"
 
 local config = {
+	enable_wayland = false,
 	font = wezterm.font_with_fallback({
 		"JetBrainsMono SemiBold",
 		"Noto Sans CJK JP",
@@ -57,12 +58,13 @@ local config = {
 		-- examples below
 		orientation = "Vertical",
 		colors = {
-			"rgba(34, 37, 38, 1)",
-			"rgba(34, 37, 38, 0.65)",
+			-- "rgba(34, 37, 38, 1)",
+			-- "rgba(34, 37, 38, 0.65)",
+			"rgba(34, 37, 38, 0.90)",
 		},
 		interpolation = "Linear",
 		blend = "Rgb",
-		noise = 64,
+		noise = 0,
 	},
 }
 
