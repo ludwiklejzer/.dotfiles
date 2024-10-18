@@ -40,9 +40,9 @@ precmd() {
 export PATH=$HOME/bin:/usr/local/bin:$HOME/.local/bin:$PATH:$HOME/.local/share/gem/ruby/3.0.0/bin
 
 # Aliases
-alias vim='nvim'
-alias vi='nvim'
-alias v='nvim'
+alias vim=open_nvim
+alias vi=open_nvim
+alias v=open_nvim
 alias ls='exa --icons --no-quotes'
 alias tlmgr='TEXMFDIST/scripts/texlive/tlmgr.pl --usermode'
 alias calculator='bc'
@@ -60,6 +60,14 @@ alias pegasus="~/Workbench/pegasus-development/pegasus-fe --portable --disable-m
 
 # Descobrir como resolver o stuttering
 alias screenrecorder="ffmpeg -f x11grab -s 1366x768 -i :0.0+0,0 -f pulse -i 0 -filter:a "volume=5.0" out.mkv"
+
+open_nvim() {
+	if [[ $(tty) == /dev/tty[0-9]* ]]; then
+		nvim $@
+	else
+		neovide $@
+	fi
+}
 
 qemu_nogrc() {
 	qemu-system-x86_64 \
