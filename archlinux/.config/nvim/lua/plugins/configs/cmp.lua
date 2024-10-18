@@ -5,14 +5,14 @@ local copilot = require("copilot.suggestion")
 
 local function border(hl_name)
 	return {
-		{ "╭", hl_name },
-		{ "─", hl_name },
-		{ "╮", hl_name },
-		{ "│", hl_name },
-		{ "╯", hl_name },
-		{ "─", hl_name },
-		{ "╰", hl_name },
-		{ "│", hl_name },
+		{ " ", hl_name },
+		{ " ", hl_name },
+		{ " ", hl_name },
+		{ " ", hl_name },
+		{ " ", hl_name },
+		{ " ", hl_name },
+		{ " ", hl_name },
+		{ " ", hl_name },
 	}
 end
 

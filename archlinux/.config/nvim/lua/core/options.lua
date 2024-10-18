@@ -6,6 +6,11 @@ g.maplocalleader = ","
 
 vim.cmd("set modeline")
 
+-- add support to autodetect hyprlang language
+vim.filetype.add({
+	pattern = { [".*/hypr/.*%.conf"] = "hyprlang" },
+})
+
 -- global options
 opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,terminal,resize,winpos"
 opt.termguicolors = true -- true colors support
@@ -92,4 +97,21 @@ opt.completeopt = "menu,menuone,noinsert,preview"
 function MyFoldText()
 	local line = vim.fn.getline(vim.v.foldstart)
 	return line .. "  "
+end
+
+-- Neovide specific configs
+if vim.g.neovide then
+	vim.opt.linespace = 2
+
+	vim.g.neovide_padding_top = 5
+	vim.g.neovide_padding_bottom = 0
+	vim.g.neovide_padding_right = 0
+	vim.g.neovide_padding_left = 0
+	vim.opt.termguicolors = true
+	vim.g.neovide_transparency = 0.9
+	vim.g.transparency = 0.9
+	vim.g.neovide_floating_shadow = false
+	vim.g.neovide_cursor_vfx_mode = "pixiedust"
+	vim.g.neovide_cursor_vfx_particle_lifetime = 2.2
+	vim.g.neovide_cursor_vfx_particle_density = 24.0
 end

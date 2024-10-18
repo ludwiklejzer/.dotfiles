@@ -63,6 +63,7 @@ capabilities.textDocument.completion.completionItem.snippetSupport = true
 
 -- Enable the following language servers with default configs
 local servers = {
+	"hyprls",
 	"gdscript",
 	"html",
 	"cssls",
@@ -157,7 +158,7 @@ lspconfig.yamlls.setup({
 })
 
 -- Javascript lsp config
-lspconfig.tsserver.setup({
+lspconfig.ts_ls.setup({
 	on_attach = on_attach,
 	capabilities = capabilities,
 	filetypes = {
@@ -199,7 +200,7 @@ server_config.qmlls = {
 	default_config = {
 		cmd = { "qmlls6", "--build-dir", "~/.cache" },
 		name = "qmlls",
-		filetypes = { "qml" },
+		filetypes = { "qml", "qmljs" },
 		root_dir = function()
 			return vim.loop.cwd()
 		end,
