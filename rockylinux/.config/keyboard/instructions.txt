@@ -1,9 +1,0 @@
-# REMAP ESC BY CAPSLOCK IN TTY
-# https://superuser.com/questions/290115/how-to-change-console-keymap-in-linux
-
-Put the following line in the /etc/rc.local:
-cat /home/user/.config/keyboard/swap_esc_capslock.kmap | loadkeys 
-
-# SET TTY FONT GLOBALLY
-Put the following line in the /etc/vconsole.conf:
-setfont ter-v18b
