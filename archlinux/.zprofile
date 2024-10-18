@@ -5,9 +5,9 @@ export XDG_STATE_HOME="$HOME/.local/state"
 export XDG_CACHE_HOME="$HOME/.cache"
 
 # IBUS
-export GTK_IM_MODULE=ibus
-export QT_IM_MODULE=ibus
-export XMODIFIERS=@im=ibus
+# export GTK_IM_MODULE=ibus
+# export QT_IM_MODULE=ibus
+# export XMODIFIERS=@im=ibus
 
 # QT
 export QT_QPA_PLATFORMTHEME=qt6ct
@@ -76,7 +76,7 @@ export LS_COLORS=ow="36;40:"
 # https://bugs.winehq.org/show_bug.cgi?id=50859
 # export MESA_GL_VERSION_OVERRIDE=4.5
 
-# run startx automatically on tty1
+# Automatically start Hyprland on tty1
 if [[ -z $DISPLAY ]] && [[ $(tty) = /dev/tty1 ]]; then
-	exec startx "$HOME/.config/X11/xinitrc"
+	exec Hyprland
 fi
