@@ -1,0 +1,13 @@
+default partial alphanumeric_keys
+xkb_symbols "basic" {
+    include "br"
+    include "keyboard-60(mod)"
+};
+
+// modified custom keys
+xkb_symbols "mod"{
+	key <CAPS> { [ Escape, Escape ] };      // Turn CapsLock into ESC
+	key <ESC> { [ apostrophe, quotedbl ] }; // Turn ESC into quotes
+};
+
+// vim:syntax=xkb
