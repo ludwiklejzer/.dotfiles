@@ -27,41 +27,11 @@ local config = {
 	adjust_window_size_when_changing_font_size = false,
 	keys = {
 		{ key = "Space", mods = "CTRL|SHIFT", action = wezterm.action.DisableDefaultAssignment },
-		{
-			key = "Enter",
-			mods = "ALT",
-			action = wezterm.action.DisableDefaultAssignment,
-		},
-		{
-			key = "7",
-			mods = "CTRL",
-			action = wezterm.action.Multiple({
-				wezterm.action.SendKey({ key = "v" }),
-				wezterm.action.SendKey({ key = "Enter" }),
-			}),
-		},
-		{
-			key = "8",
-			mods = "CTRL",
-			action = wezterm.action.Multiple({
-				wezterm.action.SendKey({ key = "Space" }),
-				wezterm.action.SendKey({ key = "w" }),
-				wezterm.action.SendKey({ key = "w" }),
-			}),
-		},
+		{ key = "Enter", mods = "ALT", action = wezterm.action.DisableDefaultAssignment },
 	},
 	window_background_gradient = {
-		-- Can be "Vertical" or "Horizontal".  Specifies the direction
-		-- in which the color gradient varies.  The default is "Horizontal",
-		-- with the gradient going from left-to-right.
-		-- Linear and Radial gradients are also supported; see the other
-		-- examples below
 		orientation = "Vertical",
-		colors = {
-			-- "rgba(34, 37, 38, 1)",
-			-- "rgba(34, 37, 38, 0.65)",
-			"rgba(34, 37, 38, 0.90)",
-		},
+		colors = { "rgba(34, 37, 38, 0.9)" },
 		interpolation = "Linear",
 		blend = "Rgb",
 		noise = 0,
