@@ -7,15 +7,14 @@
   "modules-left": ["hyprland/workspaces"],
   "modules-center": [],
   "modules-right": [
+    "group/music",
     "cpu",
     "memory",
     "temperature",
     "disk",
     "pulseaudio",
-    "hyprland/language",
     "network",
     "clock",
-    // "group/test",
     "tray",
   ],
   "hyprland/workspaces": {
@@ -42,6 +41,57 @@
     "persistent-workspaces": {
       "*": 8,
     },
+  },
+  "group/music": {
+    "orientation": "horizontal",
+    "modules": ["mpd", "custom/prev", "custom/play_pause", "custom/next"],
+    "drawer": {
+      "transition-duration": 100,
+      "transition-left-to-right": false,
+    },
+  },
+  "custom/play_pause": {
+    "format": " 󰏤 ",
+    "format-alt": " 󰐊 ",
+    "tooltip": false,
+    "on-click": "[ $(mpc status | grep -o '\\[.*\\]') = '[playing]' ] && mpc pause >/dev/null || mpc play >/dev/null",
+  },
+  "custom/next": {
+    "format": "  󰒭  ",
+    "tooltip": false,
+    "on-click": "mpc next",
+  },
+  "custom/prev": {
+    "format": "  󰒮  ",
+    "tooltip": false,
+    "on-click": "mpc prev",
+  },
+  "mpd": {
+    "format": " {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}{artist:.20} - {title:.25}  ",
+    "format-disconnected": " Disconnected  ",
+    "format-stopped": " {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}MPD Stopped",
+    "interval": 10,
+    "on-click-right": "ghostty -e ncmpcpp",
+    "on-scroll-up": "mpc volume +5",
+    "on-scroll-down": "mpc volume -5",
+    "consume-icons": {
+      "on": "󰩺 ",
+    },
+    "random-icons": {
+      "on": "󰒝 ",
+    },
+    "repeat-icons": {
+      "on": "󰑖 ",
+    },
+    "single-icons": {
+      "on": "1 ",
+    },
+    "state-icons": {
+      "paused": "󰏤",
+      "playing": "",
+    },
+    "tooltip-format": "artist:   {artist}\nalbum:    {album}\ndate:     {date}\ntime:     {elapsedTime:%M:%S}/{totalTime:%M:%S}\nvolume:   {volume}%\nposition: {songPosition}/{queueLength}",
+    "tooltip-format-disconnected": "MPD (disconnected)",
   },
   "cpu": {
     "interval": 3,
@@ -114,29 +164,6 @@
       "on-click-backward": "tz_down",
       "on-scroll-up": "shift_up",
       "on-scroll-down": "shift_down",
-    },
-  },
-  "custom/play_pause": {
-    "format": " 󰏤 ",
-    "tooltip": false,
-    "on-click": "notify-send 'ola' 'mundo'",
-  },
-  "custom/next": {
-    "format": "  󰒭  ",
-    "tooltip": false,
-    "on-click": "notify-send 'ola' 'mundo2'",
-  },
-  "custom/prev": {
-    "format": "  󰒮  ",
-    "tooltip": false,
-    "on-click": "notify-send 'ola' 'mundo'",
-  },
-  "group/test": {
-    "orientation": "horizontal",
-    "modules": ["custom/play_pause", "custom/prev", "custom/next"],
-    "drawer": {
-      "transition-duration": 100,
-      "transition-left-to-right": false,
     },
   },
   "tray": {
