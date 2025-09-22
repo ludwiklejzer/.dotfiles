@@ -3,7 +3,7 @@
     follow = mouse
 		width = 350
 		origin = top-right
-		offset = 8x10
+		offset = (8, 10)
     indicate_hidden = yes
     shrink = yes
     transparency = 0
@@ -69,7 +69,7 @@
 		class = Dunst
 
 # Define the corner radius of the notification window
-		corner_radius = 10
+		corner_radius = 0
 
 # Ignore the dbus closeNotification message.
 		ignore_dbusclose = false

@@ -3,10 +3,12 @@
 import psutil
 
 
-def is_picom_running() -> bool:
-    """Check if picom is running."""
-    for process in psutil.process_iter():
-        if process.name() == "picom":
+def is_compositor_running() -> bool:
+    """Check if any common window compositor is running."""
+    compositors = {"picom", "compton", "kwin_x11", "mutter", "wlroots", "Hyprland"}
+
+    for process in psutil.process_iter(attrs=['name']):
+        if process.info['name'] in compositors:
             return True
     return False
 
@@ -31,7 +33,7 @@ def setup(c):
     base0F = "#bd6f3e"
 
     transparent = "#cc1b1b1b"
-    if not is_picom_running():
+    if not is_compositor_running():
         transparent = base00
 
     # Set dark mode

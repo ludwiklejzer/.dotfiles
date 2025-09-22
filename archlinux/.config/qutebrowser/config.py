@@ -1,7 +1,6 @@
 """Qutebrowser configuration file."""
 
 # pylint: disable=C0111
-from typing import Any
 
 import bindings
 import options

@@ -28,7 +28,7 @@ export XINITRC="$XDG_CONFIG_HOME/X11/xinitrc"
 #export XAUTHORITY="$XDG_RUNTIME_DIR/.Xauthority"
 
 # ASDF
-export ASDF_DIR="/opt/asdf-vm"
+# export ASDF_DIR="/opt/asdf-vm"
 export ASDF_DATA_DIR="$XDG_CONFIG_HOME/asdf"
 export ASDF_CONFIG_FILE="$XDG_CONFIG_HOME/asdf/asdfrc"
 
@@ -37,12 +37,6 @@ export WGETRC="$XDG_CONFIG_HOME/wget/wgetrc"
 
 # NODE
 export NODE_REPL_HISTORY="$XDG_DATA_HOME/node_repl_history"
-
-# NPM
-export prefix="$XDG_DATA_HOME/npm"
-export cache="$XDG_CACHE_HOME/npm"
-# export init-module="$XDG_CONFIG_HOME/npm/config/npm-init.js"
-#export logs-dir="$XDG_STATE_HOME/npm/logs"
 
 # PYTHON
 export PYTHON_HISTORY="$XDG_STATE_HOME/python/history"
@@ -69,8 +63,14 @@ export PSQL_HISTORY="$XDG_STATE_HOME/psql_history"
 export LANG="fr_FR.UTF-8"
 export EDITOR="nvim"
 export TERMINAL="wezterm"
-export BROWSER="qutebrowser"
+export BROWSER="chromium"
 export LS_COLORS=ow="36;40:"
+
+# ANKI
+#export ANKI_WAYLAND=1
+
+# ELECTRON
+ELECTRON_OZONE_PLATFORM_HINT=wayland
 
 # MESA
 # https://bugs.winehq.org/show_bug.cgi?id=50859

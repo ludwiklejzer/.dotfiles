@@ -1,7 +1,6 @@
 # asdf
 archlinux/.config/asdf/*
 !archlinux/.config/asdf/asdfrc
-!archlinux/.config/asdf/tool-version
 
 # fcitx5
 archlinux/.local/share/fcitx5/themes/default*

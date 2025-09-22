@@ -1,5 +1,4 @@
--- Enable fast loader
-vim.loader.enable()
-
-require("core")
-require("plugins")
+require("config.options")
+require("config.mappings")
+require("config.autocmds")
+require("config.lazy")

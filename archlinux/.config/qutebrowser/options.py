@@ -33,7 +33,7 @@ def setup(c, config) -> None:
     c.statusbar.show = "always"
 
     # Scrollbar behavior
-    c.scrolling.bar = "never"
+    c.scrolling.bar = "overlay"
 
     # Auto save session
     c.auto_save.session = True
@@ -75,7 +75,7 @@ def setup(c, config) -> None:
     c.prompt.radius = 5
 
     # Languages to use for spell checking
-    c.spellcheck.languages = ["en-US", "pt-BR"]
+    c.spellcheck.languages = ["en-US", "pt-BR", "fr-FR"]
 
     # Search engines
     c.url.searchengines = {
@@ -97,9 +97,12 @@ def setup(c, config) -> None:
         "g": "https://www.goodreads.com/search?q={}",
         "s": "https://open.spotify.com/search/{}",
         "t": "https://trakt.tv/search?query={}",
+        "gd": "https://gamesdb.launchbox-app.com/games/results/{}",
+        "c": "https://chatgpt.com/?q={}",
     }
 
     c.aliases = {
+        "readability": "spawn --userscript readability-js",
         "adblock-toggle": "config-cycle -t content.blocking.enabled",
         "incognito": "open --private",
         "mpv": "spawn --detach mpv {url}",
@@ -110,13 +113,13 @@ def setup(c, config) -> None:
     }
 
     # New tab page
-    c.url.default_page = "https://lud-startpage.vercel.app/"
+    c.url.default_page = "https://google.com"
 
     # Start page
-    c.url.start_pages = "https://lud-startpage.vercel.app/"
+    c.url.start_pages = "https://google.com"
 
     # Completion container
-    c.completion.height = "40%"
+    c.completion.height = "30%"
     c.completion.scrollbar.width = 0
 
     # Filesystem suggestion items
@@ -168,7 +171,6 @@ def setup(c, config) -> None:
         "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/filters.txt",
         "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/privacy.txt",
         "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/filters/resource-abuse.txt",
-        "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/thirdparties/easylist-downloads.adblockplus.org/easyprivacy.txt",
         "https://raw.githubusercontent.com/uBlockOrigin/uAssets/master/thirdparties/pgl.yoyo.org/as/serverlist",
         "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/fakenews-gambling/hosts",
         "https://raw.githubusercontent.com/AdAway/adaway.github.io/master/hosts.txt",
@@ -180,6 +182,10 @@ def setup(c, config) -> None:
 
     # A list of patterns that should always be loaded despite being ad-blocked
     c.content.blocking.whitelist = []
+
+    # Whitelist host
+    config.set("content.blocking.enabled", False, "*://campusdigital.pucrs.br")
+    config.set("content.blocking.enabled", False, "*://ttsfree.com")
 
     # Which cookies to accept
     c.content.cookies.accept = "all"
@@ -212,6 +218,8 @@ def setup(c, config) -> None:
         "input.mode_override", "passthrough", "https://colab.research.google.com/*"
     )
     config.set("input.mode_override", "passthrough", "https://docs.google.com/*")
+    config.set("input.mode_override", "passthrough", "https://app.diagrams.net/*")
+    config.set("input.mode_override", "passthrough", "https://discord.com/*")
 
     # Allow websites to lock your mouse pointer.
     config.set("content.mouse_lock", True, "https://game.play-cs.com")
@@ -262,4 +270,12 @@ def setup(c, config) -> None:
             "enable-gpu-rasterization",
             "enable-accelerated-video-decode",
         ],
+    )
+
+    # Environment variables
+    config.set(
+        "qt.environ",
+        {
+            "NODE_PATH": "/home/ludwiklejzer/.dotfiles/archlinux/.config/asdf/installs/nodejs/22.8.0/lib/node_modules"
+        },
     )

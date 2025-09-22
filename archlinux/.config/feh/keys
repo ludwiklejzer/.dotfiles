@@ -21,8 +21,8 @@ toggle_fullscreen	f
 zoom_in		plus
 zoom_out	minus
 
-next_img	greater
-prev_img	less
+next_img	space
+prev_img	C-space
 reload_image	r
 size_to_image	w
 next_dir	bracketright

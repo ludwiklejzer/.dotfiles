@@ -47,14 +47,14 @@
     "modules": ["mpd", "custom/prev", "custom/play_pause", "custom/next"],
     "drawer": {
       "transition-duration": 100,
-      "transition-left-to-right": false,
+      "transition-left-to-right": true,
     },
   },
   "custom/play_pause": {
     "format": " 󰏤 ",
     "format-alt": " 󰐊 ",
     "tooltip": false,
-    "on-click": "[ $(mpc status | grep -o '\\[.*\\]') = '[playing]' ] && mpc pause >/dev/null || mpc play >/dev/null",
+    "on-click": "mpc toggle >/dev/null",
   },
   "custom/next": {
     "format": "  󰒭  ",
@@ -71,7 +71,7 @@
     "format-disconnected": " Disconnected  ",
     "format-stopped": " {consumeIcon}{randomIcon}{repeatIcon}{singleIcon}MPD Stopped",
     "interval": 10,
-    "on-click-right": "ghostty -e ncmpcpp",
+    "on-click-right": "ghostty --command='ncmpcpp'",
     "on-scroll-up": "mpc volume +5",
     "on-scroll-down": "mpc volume -5",
     "consume-icons": {

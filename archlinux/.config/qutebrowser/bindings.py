@@ -20,7 +20,13 @@ def setup(config):
     # Open image link on feh
     config.bind(
         "<Alt-i>",
-        "hint images spawn --detach curl -sk {hint-url} | feh -",
+        "hint images spawn --detach sh -c 'curl -sk {hint-url} | feh -'",
+    )
+
+    # Download image
+    config.bind(
+        "<Alt-d>",
+        "hint images download",
     )
 
     # Hint scrollable areas
@@ -29,8 +35,7 @@ def setup(config):
     # Show Qutebroser cheatsheet
     config.bind(
         "?",
-        "spawn sh -c 'nohup bspc rule -a feh -o state=floating sticky=on && \
-                feh -g 1168x720 --scale-down https://raw.githubusercontent.com/qutebrowser/qutebrowser/main/doc/img/cheatsheet-big.png'",
+        "spawn sh -c 'feh -g 1168x720 --scale-down https://raw.githubusercontent.com/qutebrowser/qutebrowser/main/doc/img/cheatsheet-big.png'",
     )
 
     # Go to next tab
